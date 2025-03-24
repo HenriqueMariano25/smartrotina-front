@@ -1,6 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import Aura from '@primeuix/themes/aura'
 import {definePreset} from "@primeuix/styled";
+
 const MyPreset = definePreset(Aura, {
   semantic: {
     primary: {
@@ -15,8 +16,17 @@ const MyPreset = definePreset(Aura, {
       800: '#0f5859',
       900: '#0b3f40',
       950: '#093233'
+    },
+    tooltip: {
+      background: 'rgba(0,0,0,0.8)',
+      color: '#fff',
+      padding: '4px',
+      borderRadius: '4px',
+      gutter: '4px',
+
     }
-  }
+  },
+
 });
 
 export default defineNuxtConfig({
@@ -27,6 +37,9 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxtjs/tailwindcss',
     '@primevue/nuxt-module'
+  ],
+  css: [
+
   ],
   primevue: {
     options: {
@@ -40,6 +53,6 @@ export default defineNuxtConfig({
           cssLayer: false
         }
       }
-    }
+    },
   },
 })
