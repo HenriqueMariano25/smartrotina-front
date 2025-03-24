@@ -1,3 +1,19 @@
+<script lang="ts">
+import {defineComponent} from 'vue'
+
+export default defineComponent({
+  setup() {
+
+
+    return {}
+  }
+})
+
+definePageMeta({
+  layout: "autenticacao"
+})
+</script>
+
 <template>
   <div class="flex">
     <div class="w-1/2 bg-fundo items-center flex justify-center">
@@ -17,30 +33,19 @@
           <InputText type="password" name="senha" class="w-full"/>
           <label for="senha">Senha</label>
         </FloatLabel>
-        <Button label="Criar" severity="primary-50" />
+        <Button label="Criar" severity="primary-50"/>
         <NuxtLink to="/login" class="text-center">
           <span class="text-sm">Já tem conta ? <b>Entrar</b></span>
         </NuxtLink>
       </div>
     </div>
     <div class="h-screen w-1/2 overflow-hidden ">
-      <img src="@/assets/images/tela-inicial.jpg" class="w-full h-full object-cover object-center" alt="imagem lateral com uma lista de compras"/>
+      <img src="@/assets/images/tela-inicial.jpg" class="w-full h-full object-cover object-center"
+           alt="imagem lateral com uma lista de compras"/>
       <div class="absolute justify-self-end top-0 inset-0 bg-gradient-to-r from-[#E8E9E3] to-transparent w-1/2 "/>
     </div>
   </div>
 </template>
-
-<script lang="ts">
-import {defineComponent} from 'vue'
-
-export default defineComponent({
-  setup() {
-
-
-    return {}
-  }
-})
-</script>
 
 <style scoped>
 

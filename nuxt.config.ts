@@ -28,7 +28,6 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@primevue/nuxt-module'
   ],
-  css: ["~/assets/css/primevue-theme.css"],
   primevue: {
     options: {
       ripple: true,

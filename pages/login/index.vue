@@ -1,3 +1,19 @@
+<script lang="ts">
+import {defineComponent} from 'vue'
+
+export default defineComponent({
+  setup() {
+
+
+    return {}
+  }
+})
+  definePageMeta({
+    layout: "autenticacao"
+  })
+
+</script>
+
 <template>
   <div class="flex">
     <div class="w-1/2 bg-fundo items-center flex justify-center">
@@ -26,18 +42,6 @@
     </div>
   </div>
 </template>
-
-<script lang="ts">
-import {defineComponent} from 'vue'
-
-export default defineComponent({
-  setup() {
-
-
-    return {}
-  }
-})
-</script>
 
 <style scoped>
 
