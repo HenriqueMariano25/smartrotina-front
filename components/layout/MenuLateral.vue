@@ -20,7 +20,7 @@ const items = ref([
     icon: 'ic:round-shopping-cart',
     // shortcut: '⌘+S'
     command: () => {
-      router.push('/listaCompras');
+      router.push('/compras');
     }
   },
   {
