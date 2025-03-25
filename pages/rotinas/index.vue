@@ -58,7 +58,7 @@ const mostrarModal = ref(true)
       <DialogCadastrarRotina v-model:visible="mostrarModal" />
     </div>
     <div v-if="tipoMostragem === 'Tabela'">
-      <DataTable :value="rotinas" tableStyle="min-width: 50rem" showGridlines stripedRows>
+      <DataTable :value="rotinas" table-style="min-width: 50rem" show-gridlines striped-rows size="small">
         <template #empty> Rotina adicionada adicionadas. </template>
         <Column header="" class="w-0">
           <template #body="slotProps">

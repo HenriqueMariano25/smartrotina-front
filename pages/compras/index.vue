@@ -23,7 +23,7 @@ const mostrarModal = ref(true)
       </Button>
       <DialogCadastrarLista v-model:visible="mostrarModal" />
     </div>
-    <DataTable :value="lista" tableStyle="min-width: 50rem" showGridlines stripedRows>
+    <DataTable :value="lista" table-style="min-width: 50rem" show-gridlines striped-rows size="small">
       <template #empty> Nenhum lista de compras adicionadas. </template>
       <Column header="" class="w-0">
         <template #body="slotProps">
