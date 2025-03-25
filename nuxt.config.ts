@@ -1,6 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import Aura from '@primeuix/themes/aura'
 import {definePreset} from "@primeuix/styled";
+import {locale} from "./plugins/primevue-locale-dictionary"
+
 
 const MyPreset = definePreset(Aura, {
     semantic: {
@@ -39,8 +41,8 @@ const MyPreset = definePreset(Aura, {
             gutter: '4px',
         },
     },
-
 });
+
 
 export default defineNuxtConfig({
     compatibilityDate: '2024-11-01',
@@ -54,6 +56,7 @@ export default defineNuxtConfig({
     css: [],
     primevue: {
         options: {
+            locale: { ...locale },
             ripple: true,
             inputVariant: 'filled',
             theme: {

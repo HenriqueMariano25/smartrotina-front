@@ -21,9 +21,8 @@ defineEmits(['update:visible'])
 </script>
 
 <template>
-  <Dialog :visible="visible" modal @update:visible="$emit('update:visible')" header="Cadastrar lista de compra"
-          class="w-5/12">
-    <Stepper linear v-model:value="stepAtiva">
+  <Dialog class="w-5/12 bg-gray-200 " :visible="visible" modal header="Cadastrar lista de compra" @update:visible="$emit('update:visible')" >
+    <Stepper v-model:value="stepAtiva" linear>
       <StepList>
         <Step :value="1">Lista</Step>
         <Step :value="2">Produtos</Step>
