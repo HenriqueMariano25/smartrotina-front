@@ -1,25 +1,48 @@
 <script setup lang="ts">
-import { Icon } from '@iconify/vue';
-import { ref } from 'vue'
+import {Icon} from '@iconify/vue';
+import {ref} from 'vue'
+import DialogCadastrarResidencia from "~/pages/residencias/components/DialogCadastrarResidencia.vue";
+import {buscarResidencias} from "~/composable/residencias/buscarResidencias";
+import type {IResidencia} from "~/interfaces/residencias/residencia";
+import {useToast} from "primevue/usetoast";
 
-const tabs = ref([
-  { title: 'Principal', value: '0'},
-  { title: 'Alugada', value: '1'},
-])
+const toast = useToast();
 
-const moradores = ref([
-  { id: 1, nome: "Henrique Mariano", dataNascimento: "25-01-1999"},
-  { id: 2, nome: "Maria Eduarda", dataNascimento: "27-09-2001"},
-])
-
+const tabs = ref<{ title: string; value: string; id: number }[]>([])
 const subTab = ref('moradores')
+const mostrarDialog = ref(false)
+const moradores = ref([
+  {id: 1, nome: "Henrique Mariano", dataNascimento: "25-01-1999"},
+  {id: 2, nome: "Maria Eduarda", dataNascimento: "27-09-2001"},
+])
+
+await buscarResidencias().then(residencias => {
+  let contador = 0
+
+  for (const residencia of residencias as IResidencia[]) {
+    tabs.value.push({title: residencia.nome, value: contador.toString(), id: residencia.id})
+    contador++
+  }
+})
+
+const residenciaCadastrada = (residencia: IResidencia) => {
+  const ultimaResidencia = tabs.value[tabs.value.length - 1]
+  tabs.value.push({title: residencia.nome, value: (ultimaResidencia.value + 1).toString(), id: residencia.id})
+  toast.add({
+    severity: 'success',
+    summary: 'Sucesso no cadastro',
+    detail: 'Residência cadatrada com sucesso',
+    life: 4000
+  });
+  mostrarDialog.value = false
+}
 
 </script>
 
 <template>
   <div class="flex flex-col w-full gap-4 h-full">
     <div class="flex justify-end p-2 bg-white rounded">
-      <Button type="button" class="font-bold">
+      <Button type="button" class="font-bold" @click="mostrarDialog = true">
         <Icon icon="ic:round-plus" width="24"/>
         <span>Residência</span>
       </Button>
@@ -33,10 +56,14 @@ const subTab = ref('moradores')
           <TabPanel v-for="tab in tabs" :key="tab.value" :value="tab.value" class="!p-0 h-full">
             <div class="flex h-full">
               <div class="flex flex-col h-full bg-gray-400 p-2 gap-2">
-                <div class="!p-1 rounded bg-secundaria-50 cursor-pointer text-black" v-tooltip="{ value: 'Moradores', showDelay: 800,}" :class="{'!bg-primaria-200': subTab === 'moradores' }" @click="subTab = 'moradores'">
+                <div class="!p-1 rounded bg-secundaria-50 cursor-pointer text-black"
+                     v-tooltip="{ value: 'Moradores', showDelay: 800,}"
+                     :class="{'!bg-primaria-200': subTab === 'moradores' }" @click="subTab = 'moradores'">
                   <Icon icon="ic:round-person" width="30" height="30"/>
                 </div>
-                <div class="!p-1 rounded bg-secundaria-50 cursor-pointer text-black" v-tooltip="{ value: 'Contas', showDelay: 800}" :class="{'!bg-primaria-200': subTab === 'contas' }" @click="subTab = 'contas'">
+                <div class="!p-1 rounded bg-secundaria-50 cursor-pointer text-black"
+                     v-tooltip="{ value: 'Contas', showDelay: 800}" :class="{'!bg-primaria-200': subTab === 'contas' }"
+                     @click="subTab = 'contas'">
                   <Icon icon="ic:round-attach-money" width="30" height="30"/>
                 </div>
               </div>
@@ -51,7 +78,7 @@ const subTab = ref('moradores')
                   </Button>
                 </div>
                 <DataTable :value="moradores" tableStyle="min-width: 50rem" showGridlines stripedRows>
-                  <template #empty> Nenhum morador adicionado nessa residência. </template>
+                  <template #empty> Nenhum morador adicionado nessa residência.</template>
                   <Column header="" class="w-0">
                     <template #body="slotProps">
                       <Button text class="!p-1">
@@ -74,7 +101,7 @@ const subTab = ref('moradores')
                   </Button>
                 </div>
                 <DataTable :value="contas" tableStyle="min-width: 50rem" showGridlines stripedRows>
-                  <template #empty> Nenhuma conta adicionada nessa residência. </template>
+                  <template #empty> Nenhuma conta adicionada nessa residência.</template>
                   <Column header="" class="w-0">
                     <template #body="slotProps">
                       <Button text class="!p-1">
@@ -92,7 +119,8 @@ const subTab = ref('moradores')
         </TabPanels>
       </Tabs>
     </div>
-
+    <DialogCadastrarResidencia v-model:visible="mostrarDialog" @cadastrado="residenciaCadastrada"/>
+    <Toast/>
   </div>
 </template>
 

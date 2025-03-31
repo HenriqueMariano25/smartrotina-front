@@ -4,7 +4,7 @@ import {useCookie} from "#app";
 
 export const axiosApi = async <T>(endpoint: string, options: AxiosRequestConfig): Promise<T> => {
     const config = useRuntimeConfig()
-    const token = useCookie("authToken").value
+    const token = useCookie("token").value
 
     const api = axios.create({
         baseURL: config.public.apiBase,

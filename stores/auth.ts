@@ -11,7 +11,7 @@ interface LoginResponse {
 export const useAutenticacaoStore = defineStore('autenticacao', {
     state: () => ({
         usuario: null as { id: string; nome: string; email: string; criadoEm: string } | null,
-        token: useCookie('token', { maxAge: 60 * 60 * 24 * 7 })
+        token: null as string | null
     }),
     actions: {
         async login(data: LoginDto) {
@@ -19,6 +19,8 @@ export const useAutenticacaoStore = defineStore('autenticacao', {
             if (response.token) {
                 this.token = response.token
                 this.usuario = response.usuario
+                const cookieToken =  useCookie('token', { maxAge: 60 * 60 * 24 * 7 })
+                cookieToken.value = response.token
             }
         },
         logout() {
