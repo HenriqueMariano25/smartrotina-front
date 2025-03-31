@@ -1,17 +1,36 @@
-<script lang="ts">
-import {defineComponent} from 'vue'
+<script setup lang="ts">
+import {ref} from 'vue'
+import type {LoginDto} from "~/dto/login/loginDto.js";
+import {useAutenticacaoStore} from "~/stores/auth";
+import {navigateTo} from "#app";
 
-export default defineComponent({
-  setup() {
-
-
-    return {}
-  }
+definePageMeta({
+  layout: "autenticacao"
 })
-  definePageMeta({
-    layout: "autenticacao"
-  })
 
+const autenticacaoStore = useAutenticacaoStore()
+
+const dadosLogin = ref({
+  email: null,
+  senha: null
+})
+
+const erroLogin = ref(false)
+const handleLogin = async () => {
+  erroLogin.value = false
+  if (dadosLogin.value.email && dadosLogin.value.senha) {
+    const data: LoginDto = {email: dadosLogin.value.email, senha: dadosLogin.value.senha}
+
+    try {
+      await autenticacaoStore.login(data)
+      await navigateTo("/")
+    } catch (err) {
+      console.log(err)
+      erroLogin.value = true
+    }
+  }
+
+}
 </script>
 
 <template>
@@ -22,14 +41,16 @@ export default defineComponent({
         <span class="text-4xl font-bold text-center ">Entrar na conta</span>
         <span class="text-center">Entre e continue tornando seu lar mais prático e organizado.</span>
         <FloatLabel variant="on">
-          <InputText name="email" class="w-full"/>
+          <InputText v-model="dadosLogin.email" name="email" class="w-full"/>
           <label for="email">Email</label>
         </FloatLabel>
         <FloatLabel variant="on">
-          <InputText type="password" name="senha" class="w-full"/>
+          <InputText v-model="dadosLogin.senha" type="password" name="senha" class="w-full"/>
           <label for="senha">Senha</label>
         </FloatLabel>
-        <Button label="Entrar" severity="primary-50"/>
+        <Button label="Entrar" severity="primary-50" :disabled="dadosLogin.email === null || dadosLogin.senha === null"
+                @click="handleLogin()"/>
+        <Message v-if="erroLogin" severity="error" closable>Email ou senha incorreta</Message>
         <NuxtLink to="/cadastrar" class="text-center">
           <span class="text-center text-sm">Não tem conta ainda ? <b>Criar</b></span>
         </NuxtLink>

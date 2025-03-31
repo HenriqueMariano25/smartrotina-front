@@ -16,9 +16,12 @@
     "@nuxt/eslint": "^1.2.0",
     "@nuxt/image": "^1.10.0",
     "@nuxtjs/tailwindcss": "^6.13.2",
+    "@pinia/nuxt": "^0.10.1",
     "@primeuix/themes": "^1.0.0",
+    "axios": "^1.8.4",
     "eslint": "^9.23.0",
     "nuxt": "^3.16.1",
+    "pinia": "^3.0.1",
     "primevue": "^4.2.5",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0"

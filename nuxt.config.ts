@@ -2,7 +2,7 @@
 import Aura from '@primeuix/themes/aura'
 import {definePreset} from "@primeuix/styled";
 import {locale} from "./plugins/primevue-locale-dictionary"
-
+import {process} from "std-env";
 
 const MyPreset = definePreset(Aura, {
     semantic: {
@@ -43,20 +43,30 @@ const MyPreset = definePreset(Aura, {
     },
 });
 
-
 export default defineNuxtConfig({
+    runtimeConfig: {
+        public: {
+            apiBase: process.env.API_BASE_URL || "http://localhost:3000"
+        }
+    },
     compatibilityDate: '2024-11-01',
     devtools: {enabled: true},
+    devServer: {
+        port: 8080
+    },
     modules: [
         '@nuxt/eslint',
         '@nuxt/image',
         '@nuxtjs/tailwindcss',
-        '@primevue/nuxt-module'
+        '@primevue/nuxt-module',
+        '@pinia/nuxt'
     ],
-    css: [],
+    css: [
+        // "primevue/resources/primevue.min.css",
+    ],
     primevue: {
         options: {
-            locale: { ...locale },
+            locale: {...locale},
             ripple: true,
             inputVariant: 'filled',
             theme: {

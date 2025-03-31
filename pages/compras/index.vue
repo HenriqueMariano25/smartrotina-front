@@ -26,7 +26,7 @@ const mostrarModal = ref(true)
     <DataTable :value="lista" table-style="min-width: 50rem" show-gridlines striped-rows size="small">
       <template #empty> Nenhum lista de compras adicionadas. </template>
       <Column header="" class="w-0">
-        <template #body="slotProps">
+        <template #body="">
           <Button text class="!p-1">
             <Icon icon="tabler:dots" style="color: #000000" width=""/>
           </Button>
