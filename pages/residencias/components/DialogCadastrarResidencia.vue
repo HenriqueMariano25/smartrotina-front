@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {Icon} from "@iconify/vue";
 import { cadastrarResidencia} from "~/composable/residencias/cadastrarResidencia";
-import type {IResidencia} from "~/interfaces/residencias/residencia";
+import type {IResidencia} from "~/interfaces/residencias/residencia.interface";
 import type {ICadastrarResidencia} from "~/interfaces/residencias/cadastrarResidencia.interface";
 
 defineProps({
@@ -21,7 +21,6 @@ const emit = defineEmits<{
 
 
 const cadastrar = async () => {
-  console.log("Cadastrando")
   try {
     const residenciaCadastrada = await cadastrarResidencia(dados.value)
     emit('cadastrado', residenciaCadastrada)
@@ -29,8 +28,6 @@ const cadastrar = async () => {
     mostrarErro.value = true
     mensagemErro.value = err
   }
-
-
 }
 
 </script>

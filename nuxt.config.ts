@@ -55,11 +55,12 @@ export default defineNuxtConfig({
         port: 8080
     },
     modules: [
-        '@nuxt/eslint',
-        '@nuxt/image',
-        '@nuxtjs/tailwindcss',
-        '@primevue/nuxt-module',
-        '@pinia/nuxt'
+      '@nuxt/eslint',
+      '@nuxt/image',
+      '@nuxtjs/tailwindcss',
+      '@primevue/nuxt-module',
+      '@pinia/nuxt',
+      'dayjs-nuxt',
     ],
     css: [
         // "primevue/resources/primevue.min.css",

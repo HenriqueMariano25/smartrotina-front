@@ -2,39 +2,145 @@
 import {Icon} from '@iconify/vue';
 import {ref} from 'vue'
 import DialogCadastrarResidencia from "~/pages/residencias/components/DialogCadastrarResidencia.vue";
+import DialogEditarMorador from "~/pages/residencias/components/DialogEditarMorador.vue";
 import {buscarResidencias} from "~/composable/residencias/buscarResidencias";
-import type {IResidencia} from "~/interfaces/residencias/residencia";
+import type {IResidencia} from "~/interfaces/residencias/residencia.interface";
 import {useToast} from "primevue/usetoast";
+import DialogCadastrarMorador from "~/pages/residencias/components/DialogCadastrarMorador.vue";
+import {buscarMoradoresPorResidencia} from "~/composable/residencias/buscarMoradoresPorResidencia";
+import type {IMorador} from "~/interfaces/residencias/morador.interface";
+import {deletarMorador} from "~/composable/residencias/deletarMorador";
 
 const toast = useToast();
+const confirm = useConfirm();
+const confimarDeletar = () => {
+  confirm.require({
+    message: 'Tem certeza que deseja deletar esse morador?',
+    header: 'Deletar morador',
+    icon: 'pi pi-info-circle',
+    rejectProps: {
+      label: 'Cancelar',
+      severity: 'secondary',
+      outlined: true
+    },
+    acceptProps: {
+      label: 'Deletar',
+      severity: 'danger'
+    },
+    accept: () => {
+      handleDeletarMorador(morador.value?.id as number)
+    },
+  });
+};
 
 const tabs = ref<{ title: string; value: string; id: number }[]>([])
 const subTab = ref('moradores')
-const mostrarDialog = ref(false)
-const moradores = ref([
-  {id: 1, nome: "Henrique Mariano", dataNascimento: "25-01-1999"},
-  {id: 2, nome: "Maria Eduarda", dataNascimento: "27-09-2001"},
+const mostrarDialogCadastrarResidencia = ref(false)
+const mostrarDialogCadastrarMorador = ref(false)
+const mostrarDialogEditarMorador = ref(false)
+const residenciaAtiva = ref<number>(0)
+const residencias = ref<{ indexResidencia: number, moradores: IMorador[] }[]>([])
+const menuOpcoesMorador = ref()
+const opcoesItemTabela = ref([
+  {
+    label: 'Editar morador',
+    icon: 'ic:baseline-edit',
+    command: () => {
+      mostrarDialogEditarMorador.value = true
+    }
+  },
+  {
+    label: 'Deletar morador',
+    icon: 'ic:baseline-delete-forever',
+    command: () => {
+      confimarDeletar()
+    }
+  }
 ])
+const morador = ref<IMorador | null>(null)
 
-await buscarResidencias().then(residencias => {
+const toggleMenuOpecosMorador = (event: Event, moradorClicado: IMorador) => {
+  event.stopPropagation()
+  menuOpcoesMorador.value?.toggle(event);
+  if (menuOpcoesMorador.value.visible === true) {
+    morador.value = moradorClicado
+  }
+};
+
+await buscarResidencias().then(res => {
   let contador = 0
 
-  for (const residencia of residencias as IResidencia[]) {
+  for (const residencia of res as IResidencia[]) {
     tabs.value.push({title: residencia.nome, value: contador.toString(), id: residencia.id})
+    residencias?.value.push({indexResidencia: residencia.id, moradores: []})
     contador++
   }
 })
 
 const residenciaCadastrada = (residencia: IResidencia) => {
   const ultimaResidencia = tabs.value[tabs.value.length - 1]
-  tabs.value.push({title: residencia.nome, value: (ultimaResidencia.value + 1).toString(), id: residencia.id})
+  tabs.value.push({title: residencia.nome, value: (ultimaResidencia.value + 1), id: residencia.id})
   toast.add({
     severity: 'success',
     summary: 'Sucesso no cadastro',
     detail: 'Residência cadatrada com sucesso',
     life: 4000
   });
-  mostrarDialog.value = false
+  mostrarDialogCadastrarResidencia.value = false
+}
+
+if (residencias.value[residenciaAtiva.value]?.moradores?.length <= 0) {
+  const moradores = await buscarMoradoresPorResidencia(residencias.value[residenciaAtiva.value]?.indexResidencia)
+  residencias.value[0]?.moradores.push(...moradores)
+}
+
+const moradorCadastrado = (morador: IMorador) => {
+  const residencia = residencias.value[residenciaAtiva.value]
+  if (residencia) {
+    residencia.moradores.push(morador)
+  }
+  toast.add({
+    severity: 'success',
+    summary: 'Sucesso no cadastro',
+    detail: 'Morador cadastrado com sucesso',
+    life: 4000
+  });
+  mostrarDialogCadastrarMorador.value = false
+}
+
+const moradorEditado = (morador: IMorador) => {
+  const moradorEncontrado = residencias.value[residenciaAtiva.value]?.moradores.find(m => m.id === morador.id)
+  if (moradorEncontrado) {
+    moradorEncontrado.nome = morador.nome
+    moradorEncontrado.dataNascimento = morador.dataNascimento
+  }
+  toast.add({
+    severity: 'success',
+    summary: 'Sucesso na edição',
+    detail: 'Morador editado com sucesso',
+    life: 4000
+  });
+  mostrarDialogEditarMorador.value = false
+}
+
+const handleDeletarMorador = async (moradorId: number) => {
+  try {
+    await deletarMorador(moradorId)
+    const moradorEncontradoIndex = residencias.value[residenciaAtiva.value]?.moradores.findIndex(m => m.id === moradorId)
+    if (moradorEncontradoIndex > -1) {
+      residencias.value[residenciaAtiva.value]?.moradores.splice(moradorEncontradoIndex, 1)
+    }
+    toast.add({
+      severity: 'success',
+      summary: 'Sucesso ao deletar',
+      detail: 'Morador deletado com sucesso',
+      life: 4000
+    });
+  } catch (err) {
+    console.log(err)
+  }
+
+
 }
 
 </script>
@@ -42,13 +148,13 @@ const residenciaCadastrada = (residencia: IResidencia) => {
 <template>
   <div class="flex flex-col w-full gap-4 h-full">
     <div class="flex justify-end p-2 bg-white rounded">
-      <Button type="button" class="font-bold" @click="mostrarDialog = true">
+      <Button type="button" class="font-bold" @click="mostrarDialogCadastrarResidencia = true">
         <Icon icon="ic:round-plus" width="24"/>
         <span>Residência</span>
       </Button>
     </div>
     <div class="p-1 bg-white rounded h-full">
-      <Tabs value="0" class="w-full !rounded h-full">
+      <Tabs value="0" class="w-full !rounded h-full" v-model:value="residenciaAtiva">
         <TabList class="!rounded">
           <Tab v-for="tab in tabs" :key="tab.title" :value="tab.value">{{ tab.title }}</Tab>
         </TabList>
@@ -70,24 +176,31 @@ const residenciaCadastrada = (residencia: IResidencia) => {
               <div class="flex flex-col w-full p-2 gap-2" v-if="subTab === 'moradores'">
                 <div class="flex gap-2">
                   <InputText type="text" placeholder="Buscar..." class="w-full"/>
-                  <Button type=button class="font-bold">
+                  <Button type=button class="font-bold" @click="mostrarDialogCadastrarMorador = true">
                     <div>
                       <Icon icon="ic:round-plus" width="24"/>
                     </div>
                     <span>Moradores</span>
                   </Button>
                 </div>
-                <DataTable :value="moradores" tableStyle="min-width: 50rem" showGridlines stripedRows>
+                <DataTable :value="residencias[residenciaAtiva]?.moradores" tableStyle="min-width: 50rem" showGridlines
+                           stripedRows size="small">
                   <template #empty> Nenhum morador adicionado nessa residência.</template>
                   <Column header="" class="w-0">
-                    <template #body="slotProps">
-                      <Button text class="!p-1">
+                    <template #body="{ data }">
+                      <Button text class="!p-1" aria-haspopup="true" aria-controls="overlay_tmenu"
+                              @click="toggleMenuOpecosMorador($event, data)">
                         <Icon icon="tabler:dots" style="color: #000000" width=""/>
                       </Button>
                     </template>
                   </Column>
-                  <Column field="nome" header="Nome"></Column>
-                  <Column field="dataNascimento" header="Data de nascimento"></Column>
+                  <Column field="nome" header="Nome">
+                  </Column>
+                  <Column field="dataNascimento" header="Data de nascimento">
+                    <template #body="{ data }">
+                      <span>{{ $dayjs(data?.dataNascimento).format("DD/MM/YYYY") }}</span>
+                    </template>
+                  </Column>
                 </DataTable>
               </div>
               <div class="flex flex-col w-full p-2 gap-2" v-if="subTab === 'contas'">
@@ -118,8 +231,30 @@ const residenciaCadastrada = (residencia: IResidencia) => {
           </TabPanel>
         </TabPanels>
       </Tabs>
+      <TieredMenu ref="menuOpcoesMorador" id="overlay_tmenu" :model="opcoesItemTabela" popup>
+        <template #item="{ item, props }">
+          <a v-ripple class="flex items-center" v-bind="props.action">
+            <Icon v-if="item.icon" :icon="item?.icon" width="24"/>
+            <span :class="item.icon"/>
+            <span>{{ item.label }}</span>
+          </a>
+        </template>
+      </TieredMenu>
     </div>
-    <DialogCadastrarResidencia v-model:visible="mostrarDialog" @cadastrado="residenciaCadastrada"/>
+    <DialogCadastrarResidencia v-model:visible="mostrarDialogCadastrarResidencia" @cadastrado="residenciaCadastrada"/>
+    <DialogCadastrarMorador
+        v-model:visible="mostrarDialogCadastrarMorador"
+        @cadastrado="moradorCadastrado"
+        :residenciaId="tabs[residenciaAtiva].id"/>
+    <DialogEditarMorador
+        v-model:visible="mostrarDialogEditarMorador"
+        @editado="moradorEditado"
+        :morador="morador"/>
+    <ConfirmDialog>
+      <template #icon>
+        <Icon icon="ic:round-warning" width="32"/>
+      </template>
+    </ConfirmDialog>
     <Toast/>
   </div>
 </template>

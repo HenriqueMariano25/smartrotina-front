@@ -16,6 +16,10 @@ import NavBar from "~/components/layout/NavBar.vue";
   </div>
 </template>
 
-<style scoped>
-
+<style>
+label.required::after {
+  content: " *";
+  color: red;
+  font-weight: bold;
+}
 </style>
