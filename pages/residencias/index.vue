@@ -59,7 +59,7 @@ const opcoesItemTabela = ref([
 ])
 const morador = ref<IMorador | null>(null)
 
-const toggleMenuOpecosMorador = (event: Event, moradorClicado: IMorador) => {
+const toggleMenuOpcoesMorador = (event: Event, moradorClicado: IMorador) => {
   event.stopPropagation()
   menuOpcoesMorador.value?.toggle(event);
   if (menuOpcoesMorador.value.visible === true) {
@@ -189,7 +189,7 @@ const handleDeletarMorador = async (moradorId: number) => {
                   <Column header="" class="w-0">
                     <template #body="{ data }">
                       <Button text class="!p-1" aria-haspopup="true" aria-controls="overlay_tmenu"
-                              @click="toggleMenuOpecosMorador($event, data)">
+                              @click="toggleMenuOpcoesMorador($event, data)">
                         <Icon icon="tabler:dots" style="color: #000000" width=""/>
                       </Button>
                     </template>
