@@ -21,7 +21,7 @@ const mostrarDialogCadastrarProduto = ref(false)
         </div>
         <span>Produto</span>
       </Button>
-<!--      <DialogCadastrarLista v-model:visible="mostrarModal"/>-->
+<!--      <DialogCadastrarListaProdutos v-model:visible="mostrarModal"/>-->
     </div>
     <div class="p-1 bg-white rounded">
       <DataView :value="produtos">

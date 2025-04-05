@@ -10,7 +10,7 @@ interface LoginResponse {
 
 export const useAutenticacaoStore = defineStore('autenticacao', {
     state: () => ({
-        usuario: null as { id: string; nome: string; email: string; criadoEm: string } | null,
+        usuario: null as UsuarioInterface | null,
         token: null as string | null
     }),
     actions: {

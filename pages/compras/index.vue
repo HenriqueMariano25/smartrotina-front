@@ -1,49 +1,80 @@
 <script setup lang="ts">
 import {ref} from 'vue'
 import {Icon} from "@iconify/vue";
-import DialogCadastrarLista from "~/pages/compras/components/DialogCadastrarLista.vue";
+import DialogCadastrarListaProdutos from "~/pages/compras/components/DialogCadastrarListaProdutos.vue";
 import type {IListaProdutos} from "~/interfaces/compras/listaProdutos.interface";
 import {useRouter} from "#vue-router";
+import {ICONES} from "~/constants/icones";
+import {useToast} from "primevue/usetoast";
+import {buscarListaProdutosPorUsuarioLogado} from "~/composable/compras/buscarListaProdutosPorUsuario";
+import DialogEditarListaProdutos from "~/pages/compras/components/DialogEditarListaProdutos.vue";
 
 const router = useRouter()
+const toast = useToast();
+
 const listaProdutosId = useState("listaProdutosId", () => null);
+const listaProdutos = ref<IListaProdutos | null>(null)
+const listasProdutos = ref<IListaProdutos[] | []>([])
+listasProdutos.value = await buscarListaProdutosPorUsuarioLogado()
 
-const lista = ref([
-  {id: 1, nome: "Mensal", quantidadeProdutos: 18, responsavel: "Henrique Mariano"},
-  {id: 2, nome: "Semanal", quantidadeProdutos: 5, responsavel: "Maria Eduarda"},
-])
-
-const mostrarModal = ref(false)
+const mostrarDialogCadastrarListaProdutos = ref(false)
+const mostrarDialogEditarListaProdutos = ref(false)
 
 const menuOpcoes = ref()
 const opcoesItemTabela = ref([
   {
     label: 'Ver lista',
-    icon: 'ic:round-remove-red-eye',
+    icon: ICONES.VISUALIZAR,
     command: () => {
       handleVerListaProdutos()
     }
   },
-  // {
-  //   label: 'Deletar morador',
-  //   icon: 'ic:baseline-delete-forever',
-  //   command: () => {
-  //     confimarDeletar()
-  //   }
-  // }
+  {
+    label: 'Editar lista',
+    icon: ICONES.EDITAR,
+    command: () => {
+      mostrarDialogEditarListaProdutos.value = true
+    }
+  },
 ])
-const listaProdutos = ref<IListaProdutos | null>(null)
+
 const toggleMenuOpcoesMorador = (event: Event, listaClicada: IListaProdutos) => {
   event.stopPropagation()
   menuOpcoes.value?.toggle(event);
-  if (menuOpcoes.value.visible === true) {
+  if (menuOpcoes.value.overlayVisible === true) {
     listaProdutos.value = listaClicada
   }
 };
 
 const handleVerListaProdutos = () => {
-  listaProdutosId.value = listaProdutos.value?.id  || null;
+  listaProdutosId.value = listaProdutos.value?.id || null;
   router.push('/compras/listaProdutos')
+}
+
+const listaProdutosCadastrada = (item: IListaProdutos) => {
+  (listasProdutos.value as IListaProdutos[]).push(item)
+  mostrarDialogCadastrarListaProdutos.value = false
+  toast.add({
+    severity: 'success',
+    summary: 'Sucesso no cadastro',
+    detail: 'Lista de produtos cadatrada com sucesso',
+    life: 4000
+  });
+}
+
+const listaProdutosEditada = (item: IListaProdutos) => {
+  const index = listasProdutos.value.findIndex((lista) => lista.id === item.id)
+  if (index !== -1) {
+    listasProdutos.value[index] = item
+  }
+
+  mostrarDialogEditarListaProdutos.value = false
+  toast.add({
+    severity: 'success',
+    summary: 'Sucesso na edição',
+    detail: 'Lista de produtos editada com sucesso',
+    life: 4000
+  });
 }
 
 </script>
@@ -51,27 +82,33 @@ const handleVerListaProdutos = () => {
 <template>
   <div class="flex flex-col w-full gap-4 h-full">
     <div class="flex justify-end p-2 bg-white rounded">
-      <Button type="button" class="font-bold" @click="mostrarModal = true">
+      <Button type="button" class="font-bold" @click="mostrarDialogCadastrarListaProdutos = true">
         <div>
           <Icon icon="ic:round-plus" width="24"/>
         </div>
         <span>Lista</span>
       </Button>
-      <DialogCadastrarLista v-model:visible="mostrarModal"/>
+      <DialogCadastrarListaProdutos v-model:visible="mostrarDialogCadastrarListaProdutos"
+                                    @cadastrado="listaProdutosCadastrada"/>
+      <DialogEditarListaProdutos v-model:visible="mostrarDialogEditarListaProdutos"
+                                 :lista-produtos-id="listaProdutos?.id" @editado="listaProdutosEditada"/>
     </div>
-    <DataTable :value="lista" table-style="min-width: 50rem" show-gridlines striped-rows size="small">
+    <DataTable :value="listasProdutos" table-style="min-width: 50rem" show-gridlines striped-rows size="small">
       <template #empty> Nenhum lista de compras adicionadas.</template>
       <Column header="" class="w-0">
         <template #body="{ data }">
           <Button text class="!p-1" @Click="toggleMenuOpcoesMorador($event, data )">
-            <Icon icon="tabler:dots" style="color: #000000" width=""/>
+            <Icon :icon="ICONES.MAIS_OPCOES" style="color: #000000" width=""/>
           </Button>
-
         </template>
       </Column>
       <Column field="nome" header="Nome"></Column>
       <Column field="quantidadeProdutos" header="Quant. Produtos"></Column>
-      <Column field="responsavel" header="Responsável"></Column>
+      <Column field="responsavel" header="Responsável">
+        <template #body="{ data }">
+          <span>{{ data?.responsavel?.nome || '-' }}</span>
+        </template>
+      </Column>
     </DataTable>
     <div>
       <Menu ref="menuOpcoes" id="overlay_tmenu" :model="opcoesItemTabela" popup>
@@ -84,6 +121,7 @@ const handleVerListaProdutos = () => {
         </template>
       </Menu>
     </div>
+    <Toast/>
   </div>
 </template>
 
