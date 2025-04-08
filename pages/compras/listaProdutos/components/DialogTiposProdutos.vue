@@ -14,7 +14,7 @@ import {deletarTipoProduto} from "~/composable/compras/deletarTipoProduto";
 defineProps({
   visible: Boolean,
 })
-defineEmits(['update:visible'])
+const emits = defineEmits(['update:visible',  'atualizarTiposProdutos'])
 
 const toast = useToast();
 const confirm = useConfirm();
@@ -65,7 +65,6 @@ const opcoesItemTabela = ref([
 const toggleMenuOpcoesMorador = (event: Event, item: ITipoProduto) => {
   event.stopPropagation()
   menuOpcoes.value?.toggle(event);
-  console.log(itemClicado);
   if (menuOpcoes.value.overlayVisible === true) {
     itemClicado.value = item
   }
@@ -87,6 +86,7 @@ const cadastrar = async () => {
     life: 4000
   });
   dados.descricao = ''
+  emits('atualizarTiposProdutos')
 }
 
 const editar = async () => {
@@ -99,18 +99,18 @@ const editar = async () => {
 
     toast.add({
       severity: 'success',
-      summary: 'Sucesso ao deletar',
-      detail: 'Tipo de produto deletado com sucesso',
+      summary: 'Sucesso na edição',
+      detail: 'Tipo de produto editado com sucesso',
       life: 4000
     });
     dados.descricao = ''
     estaEditando.value = false
+    emits('atualizarTiposProdutos')
   }
 
 }
 
 const editando = async () => {
-  console.log(itemClicado.value)
   estaEditando.value = true
   dados.descricao = itemClicado.value?.descricao || ''
 }
@@ -133,13 +133,15 @@ const handleDeletar = async () => {
       if (indexItem > -1) {
         tiposProdutos.value.splice(indexItem, 1)
       }
+
       toast.add({
         severity: 'success',
-        summary: 'Sucesso na edição',
-        detail: 'Tipo de produto editado com sucesso',
+        summary: 'Sucesso ao deletar',
+        detail: 'Tipo de produto deletado com sucesso',
         life: 4000
       });
       itemClicado.value = null
+      emits('atualizarTiposProdutos')
     }
   }
 

@@ -3,13 +3,28 @@ import {Icon} from "@iconify/vue";
 import {DataView} from "primevue";
 import {ref} from "vue";
 import DialogCadastrarProduto from "~/pages/compras/listaProdutos/components/DialogCadastrarProduto.vue";
+import type {IProduto} from "~/interfaces/compras/produto.interface";
+import {buscarProdutosPorListaProdutos} from "~/composable/compras/buscarProdutosPorListaProdutos";
 
-const produtos = ref([
-  {produtoId: 1, nome: 'Açúcar', quantidade: 1, unidade: 'kg'},
-  {produtoId: 2, nome: 'Arroz', quantidade: 3, unidade: 'un'},
-])
+const listaProdutosId = useState<number>("listaProdutosId");
+
+const produtos = ref<IProduto[] | []>([])
+onMounted(() => {
+  handleBuscarProdutos()
+})
+
+async function handleBuscarProdutos() {
+  if (listaProdutosId.value) {
+    produtos.value = await buscarProdutosPorListaProdutos(listaProdutosId?.value)
+  }
+}
 
 const mostrarDialogCadastrarProduto = ref(false)
+
+const itemCadastrado = (item: IProduto) => {
+  produtos.value.push(item)
+  mostrarDialogCadastrarProduto.value = false
+}
 </script>
 
 <template>
@@ -21,18 +36,23 @@ const mostrarDialogCadastrarProduto = ref(false)
         </div>
         <span>Produto</span>
       </Button>
-<!--      <DialogCadastrarListaProdutos v-model:visible="mostrarModal"/>-->
     </div>
     <div class="p-1 bg-white rounded">
       <DataView :value="produtos">
+        <template #empty>
+          Nenhum produto adicionado.
+        </template>
         <template #list="slotProps">
           <div class="flex flex-col">
             <div v-for="(item, index) in slotProps.items" :key="index">
               <div class="flex items-center gap-4 px-4" :class="{'border-t border-gray-300': index !== 0}">
-                <Checkbox inputId="size_large" name="size" value="Large" size="large" />
+                <Checkbox inputId="size_large" name="size" value="Large" size="large"/>
                 <div class="flex flex-col p-2">
                   <span class="font-bold">{{ item.nome }}</span>
-                  <span>Quantidade: {{ item.quantidade }} {{ item.unidade }}</span>
+                  <div>
+                    <span>Quantidade: {{ item.quantidade }} {{ item.unidade }}</span>
+                    <span v-if="item.observacao" class="text-sm"> - Obs: {{ item.observacao}}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -40,7 +60,8 @@ const mostrarDialogCadastrarProduto = ref(false)
         </template>
       </DataView>
     </div>
-    <DialogCadastrarProduto v-model:visible="mostrarDialogCadastrarProduto"/>
+    <DialogCadastrarProduto v-model:visible="mostrarDialogCadastrarProduto" @cadastrado="itemCadastrado"
+                            :lista-produtos-id="listaProdutosId"/>
   </div>
 </template>
 
