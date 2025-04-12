@@ -2,12 +2,11 @@
 </script>
 
 <template>
-  <div>
+  <div class="h-[100vh]">
     <slot/>
   </div>
 
 </template>
 
 <style scoped>
-
 </style>
