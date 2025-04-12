@@ -7,7 +7,6 @@ import {buscarResidenciaPorUsuario} from "~/composable/residencias/buscarResiden
 import {useAutenticacaoStore} from "~/stores/auth";
 import type {ICadastrarListaProdutos} from "~/interfaces/compras/cadastrarListaProdutos.interface";
 import type {IMorador} from "~/interfaces/residencias/morador.interface";
-import {buscarMoradoresPorResidencia} from "~/composable/residencias/buscarMoradoresPorResidencia";
 import {cadastrarListaProdutos} from "~/composable/compras/cadastrarListaProdutos";
 import type {IListaProdutos} from "~/interfaces/compras/listaProdutos.interface";
 import {buscarResponsaveisPorResidencia} from "~/composable/residencias/buscarResponsaveisPorResidencia";

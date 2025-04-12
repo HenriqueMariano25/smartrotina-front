@@ -6,5 +6,7 @@ export const ICONES = {
   DELETAR: 'ic:round-delete',
   ADICIONAR: 'ic:round-add',
   CANCELAR: 'ic:round-close',
-  PERIGO: 'ic:round-warning'
+  PERIGO: 'ic:round-warning',
+  MAIS: 'ic:round-plus',
+  MENOS: 'ic:round-minus',
 }

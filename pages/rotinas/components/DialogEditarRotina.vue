@@ -10,16 +10,24 @@ import type {IMorador} from "~/interfaces/residencias/morador.interface";
 import type {ICadastrarRotina} from "~/interfaces/rotinas/cadastrarRotina.interface";
 import {cadastrarRotina} from "~/composable/rotinas/cadastrarRotina";
 import type {IRotina} from "~/interfaces/rotinas/rotina.interface";
+import {buscarRotina} from "~/composable/rotinas/buscarRotina";
+import {editarRotina} from "~/composable/rotinas/editarRotina";
+import type {IEditarRotina} from "~/interfaces/rotinas/editarRotina.interface";
 
+const {$dayjs} = useNuxtApp()
 const props = defineProps({
-  visible: Boolean
+  visible: Boolean,
+  rotinaId: {
+    type: Number,
+    default: null,
+  }
 })
 const emit = defineEmits<{
   (e: 'update:visible', value: boolean): void
-  (e: 'cadastrado', rotina: IRotina): void
+  (e: 'editado', rotina: IRotina): void
 }>()
 
-const dados = reactive({
+let dados = reactive<ICadastrarRotina>({
   nome: '',
   dataInicio: new Date(),
   dataTermino: null,
@@ -37,11 +45,33 @@ const moradores = ref<IMorador[] | []>([])
 
 const {usuario} = useAutenticacaoStore()
 const residencias = ref<IResidencia[] | []>([])
+const responsavelIdOriginal = ref<number | null>(null)
+const dadosAtualizados = ref(false)
+
+
+watch(() => props.visible, async () => {
+  if (props.visible && props.rotinaId) {
+    const rotina = await buscarRotina(props.rotinaId);
+    dados.nome = rotina.nome;
+    dados.dataInicio = $dayjs(rotina.dataInicio).toDate();
+    dados.dataTermino = rotina.dataTermino ? $dayjs(rotina.dataTermino).toDate() : null;
+    dados.horaInicio = rotina.horaInicio;
+    dados.horaTermino = rotina.horaTermino;
+    dados.repeticao = rotina.repeticao;
+    dados.intervalo = rotina.intervalo;
+    dados.residenciaId = rotina.residenciaId
+    dados.observacao = rotina.observacao;
+    dados.periodo = rotina.periodo;
+
+    responsavelIdOriginal.value = rotina.responsavelId || null
+  }
+})
+
+
 onMounted(async () => {
   if (usuario?.id) {
     residencias.value = await buscarResidenciaPorUsuario(parseInt(usuario.id))
   }
-
 })
 
 const opcoes = ref(['diária', 'semanal', 'mensal', 'anual']);
@@ -92,68 +122,60 @@ function adicionarRemoverPeriodo(diaSemana: string) {
   }
 }
 
-watch(() => props.visible, (valor) => {
-  if (valor === false) {
-    dados.nome = ''
-    dados.dataInicio = new Date()
-    dados.dataTermino = null
-    dados.horaInicio = null
-    dados.horaTermino = null
-    dados.repeticao = 'diária'
-    dados.periodo = []
-    dados.intervalo = 1
-    dados.residenciaId = null
-    dados.responsavelId = null
-    dados.observacao = null
-  }
-})
-
 watch(() => dados.repeticao, () => {
-  dados.periodo = []
+  if (dadosAtualizados.value === true) {
+    dados.periodo = []
+  }
+  dadosAtualizados.value = true
 })
 
 watch(() => dados.residenciaId, async (valor) => {
   dados.responsavelId = null
   if (valor) {
     moradores.value = await buscarMoradoresPorResidencia(valor)
+    if (responsavelIdOriginal.value !== null) {
+      dados.responsavelId = responsavelIdOriginal.value
+    }
   }
 })
 
-const handleCadastrarRotina = async () => {
-  console.log(dados)
-  const dadosPrCadastrar: ICadastrarRotina = limparDados(dados)
-  console.log(dados)
+const handleEditarRotina = async () => {
+  const dadosPrEditar: IEditarRotina = limparDados(dados)
 
-  const itemCadastrado = await cadastrarRotina(dadosPrCadastrar)
-  emit('cadastrado', itemCadastrado)
+  const itemEditado = await editarRotina(props.rotinaId, dadosPrEditar)
+  emit('editado', itemEditado)
 }
 
 </script>
 
 <template>
-  <Dialog class="w-6/12" :visible="visible" modal header="Cadastrar rotina" @update:visible="(value) => emit('update:visible', value)">
+  <Dialog class="w-6/12" :visible="visible" modal header="Editar rotina"
+          @update:visible="(value) => emit('update:visible', value)">
     <div class="flex flex-col gap-4">
-      <div class="flex flex-col gap-4 pt-1.5">
+      <div class="flex flex-col gap-4 pt-1">
         <FloatLabel variant="on">
           <InputText v-model="dados.nome" id="rotina" class="w-full"/>
           <label for="rotina" class="required">Nome da rotina</label>
         </FloatLabel>
         <FloatLabel variant="on">
-          <DatePicker v-model="dados.dataInicio" show-icon fluid name="dataInicio" :min-date="new Date()" date-format="dd/mm/yy"/>
+          <DatePicker v-model="dados.dataInicio" show-icon fluid name="dataInicio" id="dataInicio"
+                      :min-date="new Date()"
+                      date-format="dd/mm/yy"/>
           <label for="dataInicio" class="required">Data de início</label>
         </FloatLabel>
         <FloatLabel variant="on">
-          <DatePicker v-model="dados.dataTermino" show-icon fluid name="dataTermino" :min-date="dados.dataInicio" date-format="dd/mm/yy"/>
+          <DatePicker v-model="dados.dataTermino" show-icon fluid name="dataTermino" :min-date="dados.dataInicio"
+                      date-format="dd/mm/yy"/>
           <label for="dataTermino">Data de término</label>
         </FloatLabel>
         <div class="flex gap-4">
-          <FloatLabel variant="on">
-            <DatePicker v-model="dados.horaInicio" id="datepicker-timeonly" timeOnly fluid/>
-            <label for="dataTermino">Hora de inicio</label>
+          <FloatLabel variant="on" class="w-full">
+            <InputText type="time" v-model="dados.horaInicio" id="horaInicio" class="w-full"/>
+            <label for="horaInicio">Hora de inicio</label>
           </FloatLabel>
-          <FloatLabel variant="on">
-            <DatePicker v-model="dados.horaTermino" id="datepicker-timeonly" timeOnly fluid/>
-            <label for="dataTermino">Hora de término</label>
+          <FloatLabel variant="on" class="w-full">
+            <InputText type="time" v-model="dados.horaTermino" id="horaInicio" class="w-full"/>
+            <label for="horaTemino">Hora de término</label>
           </FloatLabel>
         </div>
         <div class="flex flex-col">
@@ -215,7 +237,7 @@ const handleCadastrarRotina = async () => {
         <Button text severity="secondary" @click="$emit('update:visible', false)">
           Cancelar
         </Button>
-        <Button @click="handleCadastrarRotina">
+        <Button @click="handleEditarRotina">
           <div>
             <Icon icon="ic:baseline-save" width="32"/>
           </div>
