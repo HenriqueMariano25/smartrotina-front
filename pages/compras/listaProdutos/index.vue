@@ -13,6 +13,10 @@ onMounted(() => {
   handleBuscarProdutos()
 })
 
+const nomeListaProdutos = useState('nomeListaProdutos')
+const tituloPagina = useTituloPagina()
+tituloPagina.value = `Produtos da lista: ${nomeListaProdutos.value}`
+
 async function handleBuscarProdutos() {
   if (listaProdutosId.value) {
     produtos.value = await buscarProdutosPorListaProdutos(listaProdutosId?.value)

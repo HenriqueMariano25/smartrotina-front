@@ -12,6 +12,8 @@ import {ICONES} from "~/constants/icones";
 import DialogEditarRotina from "~/pages/rotinas/components/DialogEditarRotina.vue";
 
 const toast = useToast();
+const tituloPagina = useTituloPagina()
+tituloPagina.value = 'Rotinas'
 
 const tipoMostragem = ref('Tabela')
 const opcoes = ref([

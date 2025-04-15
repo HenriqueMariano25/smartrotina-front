@@ -19,6 +19,8 @@ listasProdutos.value = await buscarListaProdutosPorUsuarioLogado()
 
 const mostrarDialogCadastrarListaProdutos = ref(false)
 const mostrarDialogEditarListaProdutos = ref(false)
+const tituloPagina = useTituloPagina()
+tituloPagina.value = 'Listas de compras'
 
 const menuOpcoes = ref()
 const opcoesItemTabela = ref([
@@ -45,9 +47,12 @@ const toggleMenuOpcoesMorador = (event: Event, listaClicada: IListaProdutos) => 
     listaProdutos.value = listaClicada
   }
 };
+const nomeListaProdutos = useState<string | null>('nomeListaProdutos', () => null)
 
 const handleVerListaProdutos = () => {
   listaProdutosId.value = listaProdutos.value?.id || null;
+  nomeListaProdutos.value = listaProdutos.value?.nome || null;
+
   router.push('/compras/listaProdutos')
 }
 

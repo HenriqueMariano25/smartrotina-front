@@ -9,4 +9,5 @@ export const ICONES = {
   PERIGO: 'ic:round-warning',
   MAIS: 'ic:round-plus',
   MENOS: 'ic:round-minus',
+  VOLTAR: 'ic:round-keyboard-return'
 }

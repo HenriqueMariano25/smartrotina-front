@@ -11,6 +11,8 @@ import {buscarMoradoresPorResidencia} from "~/composable/residencias/buscarMorad
 import type {IMorador} from "~/interfaces/residencias/morador.interface";
 import {deletarMorador} from "~/composable/residencias/deletarMorador";
 
+const tituloPagina = useTituloPagina()
+tituloPagina.value = 'Residências'
 const toast = useToast();
 const confirm = useConfirm();
 const confimarDeletar = () => {

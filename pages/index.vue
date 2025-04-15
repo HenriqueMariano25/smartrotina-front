@@ -2,6 +2,9 @@
 import {ref} from 'vue'
 import {Icon} from "@iconify/vue";
 
+const tituloPagina = useTituloPagina()
+tituloPagina.value = 'Home'
+
 const rotinas = ref([
   { id: 1, nome: 'Cortar a grama', diaSemana: 'Segunda-feira', hora: '08:00', responsavel: 'Henrique Mariano' },
   { id: 2, nome: 'Limpar a piscina', diaSemana: 'Terça-feira', hora: '09:00', responsavel: 'Maria Eduarda' },

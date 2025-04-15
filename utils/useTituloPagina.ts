@@ -1,0 +1,1 @@
+export const useTituloPagina = () => useState<string>('tituloPagina', () => '');
