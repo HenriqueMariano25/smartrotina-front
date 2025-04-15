@@ -82,11 +82,13 @@ const handleCadastrar = async () => {
       </div>
       <div class="flex gap-4 w-full">
         <FloatLabel variant="on">
-          <InputText id="quantidade" v-model="dados.quantidade" class="w-full" type="number"/>
+          <InputNumber id="quantidade" v-model="dados.quantidade" class="w-full" :min="1" show-buttons
+                       :max-fraction-digits="2"/>
           <label for="quantidade" class="required">Quantidade</label>
         </FloatLabel>
         <FloatLabel variant="on" class="w-full">
-          <Select id="tipoUnidade" v-model="dados.unidade" :options="tiposUnidade" option-value="nome" option-label="nome"
+          <Select id="tipoUnidade" v-model="dados.unidade" :options="tiposUnidade" option-value="nome"
+                  option-label="nome"
                   class="w-full"/>
           <label for="tipoUnidade" class="required">Tipo de unidade</label>
         </FloatLabel>
