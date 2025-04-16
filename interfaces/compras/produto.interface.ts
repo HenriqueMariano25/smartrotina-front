@@ -6,4 +6,5 @@ export interface IProduto{
   tipoProdutoId: number;
   listaProdutosId: number;
   observacao?: string;
+  valor?: number | null
 }
