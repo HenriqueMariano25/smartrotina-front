@@ -5,13 +5,14 @@ import {ICONES} from "~/constants/icones";
 import DialogTiposProdutos from "~/pages/compras/listaProdutos/components/DialogTiposProdutos.vue";
 import type {ITipoProduto} from "~/interfaces/compras/tipoProduto.interface";
 import {buscarTipoProdutoPorUsuario} from "~/composable/compras/buscarTipoProdutoPorUsuario";
-import {cadastrarProduto} from "~/composable/compras/listaProdutos/cadastrarProduto";
-import type {ICadastrarProduto} from "~/interfaces/compras/cadastrarProduto.interface";
 import type {IProduto} from "~/interfaces/compras/produto.interface";
+import {buscarUmProduto} from "~/composable/compras/listaProdutos/buscarUmProduto";
+import type {IEditarProduto} from "~/interfaces/compras/listaProdutos/editarProduto.interface";
+import {editarProduto} from "~/composable/compras/listaProdutos/editarProduto";
 
 const props = defineProps({
   visible: Boolean,
-  listaProdutosId: Number
+  produtoId: Number
 })
 // const emits = defineEmits(['update:visible'])
 const emit = defineEmits<{
@@ -39,7 +40,7 @@ const camposObrigatorio = ['nome', 'tipoProdutoId', 'quantidade', 'tipoUnidade']
 const mostrarDialogTiposProdutos = ref<boolean>(false)
 const tiposProdutos = ref<ITipoProduto[] | []>([])
 
-onMounted(() => {
+onBeforeMount(() => {
   handleBuscaTiposProdutos()
 })
 
@@ -51,29 +52,31 @@ const desabilitarBtn = computed(() => {
   return temCampoInvalido(dados, camposObrigatorio)
 })
 
-const handleCadastrar = async () => {
-  if (props.listaProdutosId) {
-    const dadosPrCadastrar: ICadastrarProduto = limparDados(dados)
-    const itemCadastrado = await cadastrarProduto(props?.listaProdutosId, dadosPrCadastrar)
-    emit('cadastrado', itemCadastrado)
-  }
-}
-
-watch(() => props.visible, (valor) => {
-  if (valor === true) {
-    dados.nome = ''
-    dados.tipoProdutoId = null
-    dados.quantidade = 1
-    dados.unidade = 'unidade'
-    dados.observacao = ''
-    dados.valor = 0
+watch(() => props.visible, async (valor) => {
+  if (valor && props.produtoId) {
+    const produtoBuscado = await buscarUmProduto(props.produtoId)
+    dados.nome = produtoBuscado.nome
+    dados.quantidade = produtoBuscado.quantidade
+    dados.tipoProdutoId = produtoBuscado.tipoProdutoId
+    dados.valor = produtoBuscado.valor || 0
+    dados.observacao = produtoBuscado.observacao
+    dados.unidade = produtoBuscado.unidade
   }
 })
+
+const handleEditar = async () => {
+  if (props.produtoId) {
+    const dadosPrEditar: IEditarProduto = limparDados(dados)
+    const itemEditado = await editarProduto(props?.produtoId, dadosPrEditar)
+    emit('editado', itemEditado)
+  }
+
+}
 
 </script>
 
 <template>
-  <Dialog class="w-6/12 bg-gray-200 " :visible="visible" modal header="Cadastrar produto"
+  <Dialog class="w-6/12 bg-gray-200 " :visible="visible" modal header="Editar produto"
           @update:visible="(value) => emit('update:visible', value)">
     <div class="flex flex-col gap-4 pt-1.5">
       <FloatLabel variant="on">
@@ -119,7 +122,7 @@ watch(() => props.visible, (valor) => {
         <Button text severity="secondary" @click="$emit('update:visible', false)">
           Cancelar
         </Button>
-        <Button :disabled="desabilitarBtn" @click="handleCadastrar()">
+        <Button :disabled="desabilitarBtn" @click="handleEditar()">
           <div>
             <Icon icon="ic:baseline-save" width="32"/>
           </div>

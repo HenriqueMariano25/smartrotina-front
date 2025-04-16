@@ -4,4 +4,5 @@ export interface ICadastrarProduto {
   unidade: string;
   tipoProdutoId: number;
   observacao?: string
+  valor?: number
 }

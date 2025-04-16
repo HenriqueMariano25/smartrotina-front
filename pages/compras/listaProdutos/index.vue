@@ -5,10 +5,15 @@ import {ref} from "vue";
 import DialogCadastrarProduto from "~/pages/compras/listaProdutos/components/DialogCadastrarProduto.vue";
 import type {IProduto} from "~/interfaces/compras/produto.interface";
 import {buscarProdutosPorListaProdutos} from "~/composable/compras/buscarProdutosPorListaProdutos";
+import {ICONES} from "~/constants/icones";
+import DialogEditarProduto from "~/pages/compras/listaProdutos/components/DialogEditarProduto.vue";
+import {useToast} from "primevue/usetoast";
 
+const toast = useToast();
 const listaProdutosId = useState<number>("listaProdutosId");
+const produtos = ref<IProduto[]>([])
 
-const produtos = ref<IProduto[] | []>([])
+
 onMounted(() => {
   handleBuscarProdutos()
 })
@@ -24,13 +29,41 @@ async function handleBuscarProdutos() {
 }
 
 const mostrarDialogCadastrarProduto = ref(false)
+const mostrarDialogEditarProduto = ref(false)
 
 const itemCadastrado = (item: IProduto) => {
   produtos.value.push(item)
   mostrarDialogCadastrarProduto.value = false
+
+  toast.add({
+    severity: 'success',
+    summary: 'Sucesso no cadastro',
+    detail: 'Produto cadastrado com sucesso',
+    life: 4000
+  });
+}
+
+const itemEditado = (item: IProduto) => {
+  const index = produtos.value.findIndex(produto => produto.id === item.id)
+  if (index !== -1) {
+    produtos.value[index] = item
+  }
+  mostrarDialogEditarProduto.value = false
+  toast.add({
+    severity: 'success',
+    summary: 'Sucesso na edição',
+    detail: 'Produto editado com sucesso',
+    life: 4000
+  });
 }
 
 const produtosSelecionados = ref([])
+const produtoSelecionadoId = ref<number | undefined>(undefined)
+
+const editandoProduto = (id: number) => {
+  produtoSelecionadoId.value = id;
+  mostrarDialogEditarProduto.value = true
+}
 
 </script>
 
@@ -46,27 +79,38 @@ const produtosSelecionados = ref([])
     </div>
     <div class="p-1 bg-white rounded">
       <div class="bg-primaria-200 rounded px-2 py-1 text-lg font-medium flex gap-2 items-center">
-        <Icon icon="ic:round-checklist" width=""/>
+        <Icon icon="ic:round-checklist" width="28"/>
         <span>Produtos pendentes</span>
         <span class="ml-auto">Total: {{ produtos.length - produtosSelecionados.length  }}</span>
       </div>
-      <DataView :value="produtos">
+      <DataView :value="produtos" data-key="id">
         <template #empty>
-          Nenhum produto adicionado.
+          <div class="py-1 px-2">
+            <span class="text-lg font-medium">Nenhum produto adicionado.</span>
+          </div>
         </template>
         <template #list="slotProps">
           <div class="flex flex-col">
             <div v-for="(item, index) in slotProps.items" :key="index">
               <div v-if="!produtosSelecionados.some(produto => produto.id === item.id)"
-                   class="flex items-center gap-4 px-4" :class="{'border-t border-gray-300': index !== 0}">
-                <!--                <Checkbox inputId="size_large" name="size" :value="item.id" size="large" @change="selecionarProduto(item.id)"/>-->
-                <Checkbox v-model="produtosSelecionados" name="size" :value="item" size="large"/>
-                <div class="flex flex-col p-2">
-                  <span class="font-bold">{{ item.nome }}</span>
-                  <div>
-                    <span>Quantidade: {{ item.quantidade }} {{ item.unidade }}</span>
-                    <span v-if="item.observacao" class="text-sm"> - Obs: {{ item.observacao }}</span>
+                   class="flex items-center gap-4 px-4 justify-between" :class="{'border-t border-gray-300': index !== 0}">
+                <div class="flex items-center gap-4">
+                  <Checkbox v-model="produtosSelecionados" name="size" :value="item" size="large"/>
+                  <div class="flex flex-col p-2">
+                    <span class="font-bold">{{ item.nome }}</span>
+                    <div>
+                      <span>Quantidade: {{ item.quantidade }} {{ item.unidade }}</span>
+                      <span v-if="item.observacao" class="text-sm"> - Obs: {{ item.observacao }}</span>
+                    </div>
                   </div>
+                </div>
+                <div class="flex gap-2">
+                  <Button text class="!p-1">
+                    <Icon icon="ri:money-dollar-circle-line" width="32"/>
+                  </Button>
+                  <Button text class="!p-1" @click="editandoProduto(item.id)">
+                    <Icon :icon="ICONES.EDITAR" width="32"/>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -80,9 +124,12 @@ const produtosSelecionados = ref([])
         <span>Carrinho de compras</span>
         <span class="ml-auto">Total: {{ produtosSelecionados.length }}</span>
       </div>
-      <DataView :value="produtosSelecionados">
+      <DataView :value="produtosSelecionados" data-key="id">
         <template #empty>
-          Nenhum produto selecionado.
+          <div class="py-1 px-2">
+            <span class="text-lg font-medium">Nenhum produto selecionado.</span>
+          </div>
+
         </template>
         <template #list="slotProps">
           <div class="flex flex-col">
@@ -105,6 +152,8 @@ const produtosSelecionados = ref([])
     </div>
     <DialogCadastrarProduto v-model:visible="mostrarDialogCadastrarProduto" @cadastrado="itemCadastrado"
                             :lista-produtos-id="listaProdutosId"/>
+    <DialogEditarProduto :produto-id="produtoSelecionadoId" v-model:visible="mostrarDialogEditarProduto" @editado="itemEditado"/>
+    <Toast/>
   </div>
 </template>
 
