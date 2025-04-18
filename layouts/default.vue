@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import MenuLateral from "~/components/layout/MenuLateral.vue";
 import NavBar from "~/components/layout/NavBar.vue";
 import NavBarMobile from "~/components/layout/NavBarMobile.vue";
 import {useEhMobile} from "~/utils/ehMobile";
 import MenuMobile from "~/components/layout/MenuMobile.vue";
+import PanelMenuLateral from "~/components/layout/PanelMenuLateral.vue";
 
 
 const { ehMobile } = useEhMobile()
@@ -15,7 +15,7 @@ const { ehMobile } = useEhMobile()
     <NavBar v-if="!ehMobile"/>
     <NavBarMobile v-if="ehMobile"/>
     <div class="flex flex-col md:flex-row h-full ">
-      <MenuLateral v-if="!ehMobile" />
+      <PanelMenuLateral v-if="!ehMobile" />
       <MenuMobile v-if="ehMobile" />
       <div class="p-4 w-full">
         <slot />

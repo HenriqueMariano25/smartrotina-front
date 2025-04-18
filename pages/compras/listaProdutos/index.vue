@@ -9,6 +9,7 @@ import {ICONES} from "~/constants/icones";
 import DialogEditarProduto from "~/pages/compras/listaProdutos/components/DialogEditarProduto.vue";
 import {useToast} from "primevue/usetoast";
 import {editarValorProduto} from "~/composable/compras/editarValorProduto";
+import BarraCarrinhoCompra from "~/pages/compras/components/BarraCarrinhoCompra.vue";
 
 const toast = useToast();
 const listaProdutosId = useState<number>("listaProdutosId");
@@ -88,6 +89,12 @@ const handleEditarValorProduto = async () => {
     });
   }
 }
+
+const totalValorSelecionados = computed(() => {
+  return produtosSelecionados.value.reduce((total: number, produto: IProduto) => {
+    return total + (produto.valor || 0)
+  }, 0)
+})
 
 </script>
 
@@ -222,6 +229,7 @@ const handleEditarValorProduto = async () => {
         </template>
       </DataView>
     </div>
+    <BarraCarrinhoCompra :total-selecionados="produtosSelecionados.length" :total-valor="totalValorSelecionados"/>
     <DialogCadastrarProduto v-model:visible="mostrarDialogCadastrarProduto" @cadastrado="itemCadastrado"
                             :lista-produtos-id="listaProdutosId"/>
     <DialogEditarProduto :produto-id="produtoSelecionadoId" v-model:visible="mostrarDialogEditarProduto"
