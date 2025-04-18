@@ -93,22 +93,24 @@ const listaProdutosEditada = (item: IListaProdutos) => {
         </div>
         <span>Lista</span>
       </Button>
-      <DialogCadastrarListaProdutos v-model:visible="mostrarDialogCadastrarListaProdutos"
+      <DialogCadastrarListaProdutos
+v-model:visible="mostrarDialogCadastrarListaProdutos"
                                     @cadastrado="listaProdutosCadastrada"/>
-      <DialogEditarListaProdutos v-model:visible="mostrarDialogEditarListaProdutos"
+      <DialogEditarListaProdutos
+v-model:visible="mostrarDialogEditarListaProdutos"
                                  :lista-produtos-id="listaProdutos?.id" @editado="listaProdutosEditada"/>
     </div>
     <DataTable :value="listasProdutos" table-style="min-width: 50rem" show-gridlines striped-rows size="small">
       <template #empty> Nenhum lista de compras adicionadas.</template>
       <Column header="" class="w-0">
         <template #body="{ data }">
-          <Button text class="!p-1" @Click="toggleMenuOpcoesMorador($event, data )">
+          <Button text class="!p-1" @click="toggleMenuOpcoesMorador($event, data )">
             <Icon :icon="ICONES.MAIS_OPCOES" style="color: #000000" width=""/>
           </Button>
         </template>
       </Column>
-      <Column field="nome" header="Nome"></Column>
-      <Column field="quantidadeProdutos" header="Quant. Produtos"></Column>
+      <Column field="nome" header="Nome"/>
+      <Column field="quantidadeProdutos" header="Quant. Produtos"/>
       <Column field="responsavel" header="Responsável">
         <template #body="{ data }">
           <span>{{ data?.responsavel?.nome || '-' }}</span>
@@ -116,7 +118,7 @@ const listaProdutosEditada = (item: IListaProdutos) => {
       </Column>
     </DataTable>
     <div>
-      <Menu ref="menuOpcoes" id="overlay_tmenu" :model="opcoesItemTabela" popup>
+      <Menu id="overlay_tmenu" ref="menuOpcoes" :model="opcoesItemTabela" popup>
         <template #item="{ item, props }">
           <a v-ripple class="flex items-center" v-bind="props.action">
             <Icon v-if="item.icon" :icon="item?.icon" width="24"/>

@@ -144,13 +144,12 @@ const handleDeletar = async () => {
       emits('atualizarTiposProdutos')
     }
   }
-
 }
 
 </script>
 
 <template>
-  <Dialog class="w-6/12 bg-gray-200 " :visible="visible" modal header="Tipos de produtos"
+  <Dialog class="w-5/12 bg-gray-200 " :visible="visible" modal header="Tipos de produtos"
           @update:visible="$emit('update:visible')">
     <div class="flex flex-col gap-4 pt-1.5">
       <div class="flex gap-4 items-center">
@@ -168,7 +167,7 @@ const handleDeletar = async () => {
           <Icon :icon="ICONES.CANCELAR" width="24"/>
         </Button>
       </div>
-      <DataTable :value="tiposProdutos" table-style="min-width: 50rem" show-gridlines striped-rows size="small">
+      <DataTable :value="tiposProdutos" table-style="w-full" show-gridlines striped-rows size="small">
         <template #empty> Nenhum lista de compras adicionadas.</template>
         <Column header="" class="w-0">
           <template #body="{ data }">

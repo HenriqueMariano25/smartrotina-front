@@ -3,7 +3,7 @@ import {Icon} from "@iconify/vue";
 import {DataView} from "primevue";
 import {ref} from "vue";
 import DialogCadastrarProduto from "~/pages/compras/listaProdutos/components/DialogCadastrarProduto.vue";
-import type {IProduto} from "~/interfaces/compras/produto.interface";
+import type {IProduto} from "~/interfaces/produtos/produto.interface";
 import {buscarProdutosPorListaProdutos} from "~/composable/compras/buscarProdutosPorListaProdutos";
 import {ICONES} from "~/constants/icones";
 import DialogEditarProduto from "~/pages/compras/listaProdutos/components/DialogEditarProduto.vue";

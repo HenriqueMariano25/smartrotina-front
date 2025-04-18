@@ -7,13 +7,16 @@ import type {ITipoProduto} from "~/interfaces/compras/tipoProduto.interface";
 import {buscarTipoProdutoPorUsuario} from "~/composable/compras/buscarTipoProdutoPorUsuario";
 import {cadastrarProduto} from "~/composable/compras/listaProdutos/cadastrarProduto";
 import type {ICadastrarProduto} from "~/interfaces/compras/cadastrarProduto.interface";
-import type {IProduto} from "~/interfaces/compras/produto.interface";
+import type {IProduto} from "~/interfaces/produtos/produto.interface";
 
 const props = defineProps({
   visible: Boolean,
-  listaProdutosId: Number
+  listaProdutosId: {
+    type: Number,
+    default: null
+  }
 })
-// const emits = defineEmits(['update:visible'])
+
 const emit = defineEmits<{
   (e: 'update:visible', value: boolean): void
   (e: 'cadastrado', produto: IProduto): void

@@ -5,7 +5,7 @@ import {ICONES} from "~/constants/icones";
 import DialogTiposProdutos from "~/pages/compras/listaProdutos/components/DialogTiposProdutos.vue";
 import type {ITipoProduto} from "~/interfaces/compras/tipoProduto.interface";
 import {buscarTipoProdutoPorUsuario} from "~/composable/compras/buscarTipoProdutoPorUsuario";
-import type {IProduto} from "~/interfaces/compras/produto.interface";
+import type {IProduto} from "~/interfaces/produtos/produto.interface";
 import {buscarUmProduto} from "~/composable/compras/listaProdutos/buscarUmProduto";
 import type {IEditarProduto} from "~/interfaces/compras/listaProdutos/editarProduto.interface";
 import {editarProduto} from "~/composable/compras/listaProdutos/editarProduto";
