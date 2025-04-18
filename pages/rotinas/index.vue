@@ -12,8 +12,9 @@ import {ICONES} from "~/constants/icones";
 import DialogEditarRotina from "~/pages/rotinas/components/DialogEditarRotina.vue";
 
 const toast = useToast();
-const tituloPagina = useTituloPagina()
-tituloPagina.value = 'Rotinas'
+const dadosPagina = useDadosPagina();
+dadosPagina.value.titulo = 'Rotina'
+dadosPagina.value.icone = 'ic:round-home'
 
 const tipoMostragem = ref('Tabela')
 const opcoes = ref([
@@ -101,7 +102,9 @@ const toggleMenuOpcoes = (event: Event, itemClicado: IRotina) => {
   <div class="flex flex-col w-full gap-4 h-full">
     <div class="flex justify-between p-2 bg-white rounded items-center">
       <div>
-        <SelectButton v-model="tipoMostragem" :options="opcoes" option-label="label" option-value="value" data-key="value"
+        <SelectButton
+v-model="tipoMostragem" :options="opcoes" option-label="label" option-value="value"
+                      data-key="value"
                       size="large">
           <template #option="slotProps">
             <Icon :icon="slotProps.option.icon" width="34"/>
@@ -115,7 +118,7 @@ const toggleMenuOpcoes = (event: Event, itemClicado: IRotina) => {
         <span>Rotina</span>
       </Button>
       <DialogCadastrarRotina v-model:visible="mostrarDialogCadastrarRotina" @cadastrado="rotinaCadastrada"/>
-      <DialogEditarRotina v-model:visible="mostrarDialogEditarRotina" :rotinaId="item?.id" @editado="rotinaEditada"/>
+      <DialogEditarRotina v-model:visible="mostrarDialogEditarRotina" :rotina-id="item?.id" @editado="rotinaEditada"/>
     </div>
     <div v-show="tipoMostragem === 'Tabela'">
       <DataTable :value="rotinas" table-style="min-width: 50rem" show-gridlines striped-rows size="small">
@@ -123,15 +126,17 @@ const toggleMenuOpcoes = (event: Event, itemClicado: IRotina) => {
         <Column header="" class="w-0">
           <template #body="{ data }">
             <Button text class="!p-1" @click="toggleMenuOpcoes($event,data )">
-              <Icon icon="tabler:dots" style="color: #000000" />
+              <Icon icon="tabler:dots" style="color: #000000"/>
             </Button>
           </template>
         </Column>
-        <Column field="nome" header="Rotina"></Column>
-        <Column field="diaSemana" header="Próxima data"></Column>
+        <Column field="nome" header="Rotina"/>
+        <Column field="diaSemana" header="Próxima data"/>
         <Column field="inicio" header="Início">
           <template #body="{ data }">
-            <span>{{ data?.horaInicio && data?.dataInicio ? `${$dayjs(data?.dataInicio).format('DD/MM/YYYY')} - ${data?.horaInicio}` : '-' }}</span>
+            <span>{{
+                data?.horaInicio && data?.dataInicio ? `${$dayjs(data?.dataInicio).format('DD/MM/YYYY')} - ${data?.horaInicio}` : '-'
+              }}</span>
           </template>
         </Column>
         <Column field="responsavel.nome" header="Responsável">
@@ -146,7 +151,7 @@ const toggleMenuOpcoes = (event: Event, itemClicado: IRotina) => {
     </div>
     <Toast/>
     <div>
-      <Menu ref="menuOpcoes" id="overlay_tmenu" :model="opcoesItemTabela" popup>
+      <Menu id="overlay_tmenu" ref="menuOpcoes" :model="opcoesItemTabela" popup>
         <template #item="{ item, props }">
           <a v-ripple class="flex items-center" v-bind="props.action">
             <Icon v-if="item.icon" :icon="item?.icon" width="24"/>

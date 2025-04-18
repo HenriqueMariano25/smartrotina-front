@@ -11,8 +11,9 @@ import {buscarMoradoresPorResidencia} from "~/composable/residencias/buscarMorad
 import type {IMorador} from "~/interfaces/residencias/morador.interface";
 import {deletarMorador} from "~/composable/residencias/deletarMorador";
 
-const tituloPagina = useTituloPagina()
-tituloPagina.value = 'Residências'
+const dadosPagina = useDadosPagina();
+dadosPagina.value.titulo = 'Residências'
+dadosPagina.value.icone = 'ic:round-meeting-room'
 const toast = useToast();
 const confirm = useConfirm();
 const confimarDeletar = () => {
@@ -156,7 +157,7 @@ const handleDeletarMorador = async (moradorId: number) => {
       </Button>
     </div>
     <div class="p-1 bg-white rounded h-full">
-      <Tabs value="0" class="w-full !rounded h-full" v-model:value="residenciaAtiva">
+      <Tabs v-model:value="residenciaAtiva" value="0" class="w-full !rounded h-full">
         <TabList class="!rounded">
           <Tab v-for="tab in tabs" :key="tab.title" :value="tab.value">{{ tab.title }}</Tab>
         </TabList>
@@ -164,18 +165,20 @@ const handleDeletarMorador = async (moradorId: number) => {
           <TabPanel v-for="tab in tabs" :key="tab.value" :value="tab.value" class="!p-0 h-full">
             <div class="flex h-full">
               <div class="flex flex-col h-full bg-gray-400 p-2 gap-2">
-                <div class="!p-1 rounded bg-secundaria-50 cursor-pointer text-black"
-                     v-tooltip="{ value: 'Moradores', showDelay: 800,}"
+                <div
+v-tooltip="{ value: 'Moradores', showDelay: 800,}"
+                     class="!p-1 rounded bg-secundaria-50 cursor-pointer text-black"
                      :class="{'!bg-primaria-200': subTab === 'moradores' }" @click="subTab = 'moradores'">
                   <Icon icon="ic:round-person" width="30" height="30"/>
                 </div>
-                <div class="!p-1 rounded bg-secundaria-50 cursor-pointer text-black"
-                     v-tooltip="{ value: 'Contas', showDelay: 800}" :class="{'!bg-primaria-200': subTab === 'contas' }"
+                <div
+v-tooltip="{ value: 'Contas', showDelay: 800}"
+                     class="!p-1 rounded bg-secundaria-50 cursor-pointer text-black" :class="{'!bg-primaria-200': subTab === 'contas' }"
                      @click="subTab = 'contas'">
                   <Icon icon="ic:round-attach-money" width="30" height="30"/>
                 </div>
               </div>
-              <div class="flex flex-col w-full p-2 gap-2" v-if="subTab === 'moradores'">
+              <div v-if="subTab === 'moradores'" class="flex flex-col w-full p-2 gap-2">
                 <div class="flex gap-2">
                   <InputText type="text" placeholder="Buscar..." class="w-full"/>
                   <Button type=button class="font-bold" @click="mostrarDialogCadastrarMorador = true">
@@ -185,19 +188,20 @@ const handleDeletarMorador = async (moradorId: number) => {
                     <span>Moradores</span>
                   </Button>
                 </div>
-                <DataTable :value="residencias[residenciaAtiva]?.moradores" tableStyle="min-width: 50rem" showGridlines
-                           stripedRows size="small">
+                <DataTable
+:value="residencias[residenciaAtiva]?.moradores" table-style="min-width: 50rem" show-gridlines
+                           striped-rows size="small">
                   <template #empty> Nenhum morador adicionado nessa residência.</template>
                   <Column header="" class="w-0">
                     <template #body="{ data }">
-                      <Button text class="!p-1" aria-haspopup="true" aria-controls="overlay_tmenu"
+                      <Button
+text class="!p-1" aria-haspopup="true" aria-controls="overlay_tmenu"
                               @click="toggleMenuOpcoesMorador($event, data)">
                         <Icon icon="tabler:dots" style="color: #000000" width=""/>
                       </Button>
                     </template>
                   </Column>
-                  <Column field="nome" header="Nome">
-                  </Column>
+                  <Column field="nome" header="Nome"/>
                   <Column field="dataNascimento" header="Data de nascimento">
                     <template #body="{ data }">
                       <span>{{ $dayjs(data?.dataNascimento).format("DD/MM/YYYY") }}</span>
@@ -205,7 +209,7 @@ const handleDeletarMorador = async (moradorId: number) => {
                   </Column>
                 </DataTable>
               </div>
-              <div class="flex flex-col w-full p-2 gap-2" v-if="subTab === 'contas'">
+              <div v-if="subTab === 'contas'" class="flex flex-col w-full p-2 gap-2">
                 <div class="flex gap-2">
                   <InputText type="text" placeholder="Buscar..." class="w-full"/>
                   <Button type=button class="font-bold">
@@ -215,7 +219,7 @@ const handleDeletarMorador = async (moradorId: number) => {
                     <span>Contas</span>
                   </Button>
                 </div>
-                <DataTable :value="contas" tableStyle="min-width: 50rem" showGridlines stripedRows>
+                <DataTable :value="contas" table-style="min-width: 50rem" show-gridlines striped-rows>
                   <template #empty> Nenhuma conta adicionada nessa residência.</template>
                   <Column header="" class="w-0">
                     <template #body="slotProps">
@@ -224,16 +228,16 @@ const handleDeletarMorador = async (moradorId: number) => {
                       </Button>
                     </template>
                   </Column>
-                  <Column field="tipoConta" header="Tipo da conta"></Column>
-                  <Column field="valor" header="Valor"></Column>
-                  <Column field="dataLancamento" header="Data lançamento"></Column>
+                  <Column field="tipoConta" header="Tipo da conta"/>
+                  <Column field="valor" header="Valor"/>
+                  <Column field="dataLancamento" header="Data lançamento"/>
                 </DataTable>
               </div>
             </div>
           </TabPanel>
         </TabPanels>
       </Tabs>
-      <TieredMenu ref="menuOpcoesMorador" id="overlay_tmenu" :model="opcoesItemTabela" popup>
+      <TieredMenu id="overlay_tmenu" ref="menuOpcoesMorador" :model="opcoesItemTabela" popup>
         <template #item="{ item, props }">
           <a v-ripple class="flex items-center" v-bind="props.action">
             <Icon v-if="item.icon" :icon="item?.icon" width="24"/>
@@ -246,12 +250,12 @@ const handleDeletarMorador = async (moradorId: number) => {
     <DialogCadastrarResidencia v-model:visible="mostrarDialogCadastrarResidencia" @cadastrado="residenciaCadastrada"/>
     <DialogCadastrarMorador
         v-model:visible="mostrarDialogCadastrarMorador"
-        @cadastrado="moradorCadastrado"
-        :residenciaId="tabs[residenciaAtiva].id"/>
+        :residencia-id="tabs[residenciaAtiva].id"
+        @cadastrado="moradorCadastrado"/>
     <DialogEditarMorador
         v-model:visible="mostrarDialogEditarMorador"
-        @editado="moradorEditado"
-        :morador="morador"/>
+        :morador="morador"
+        @editado="moradorEditado"/>
     <ConfirmDialog>
       <template #icon>
         <Icon icon="ic:round-warning" width="32"/>

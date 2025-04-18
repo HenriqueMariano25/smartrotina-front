@@ -3,6 +3,7 @@ import {Icon} from "@iconify/vue";
 import {useAutenticacao} from "~/composable/login/useAutenticacao";
 import {useAutenticacaoStore} from "~/stores/auth";
 import {ICONES} from "~/constants/icones";
+import {useDadosPagina} from "~/utils/useTituloPagina";
 
 const menuRef = ref();
 
@@ -35,8 +36,8 @@ const toggle = (event: Event) => {
 const autenticacao = useAutenticacaoStore()
 const nomeFormatado = autenticacao.usuario?.nome.split(' ')[0];
 
-const tituloPagina = useTituloPagina()
-const router = useRouter()
+const dadosPagina = useDadosPagina()
+// const iconePagina = useTituloPagina()
 
 </script>
 
@@ -45,17 +46,16 @@ const router = useRouter()
     <Menubar class="!bg-secundaria-250 !rounded-none !border-0">
       <template #start>
         <div class="w-44 justify-center flex ">
-          <img src="@/assets/images/logo.png" alt="Logo" class="" width="140px"/>
+          <img src="@/assets/images/logo.png" alt="Logo" class="" width="140px">
         </div>
 
       </template>
       <template #menubutton>
-        <div class="ml-4 flex items-center gap-4">
-          <Button text @click="router.back()">
-            <Icon :icon="ICONES.VOLTAR"/>
-            Voltar
-          </Button>
-          <span class="text-2xl font-bold ">{{ tituloPagina }}</span>
+        <div class="ml-6 flex items-center gap-2">
+          <div class="bg-secundaria-500 rounded">
+            <Icon :icon="dadosPagina.icone" width="40"/>
+          </div>
+          <span class="text-2xl font-bold ">{{ dadosPagina?.titulo }}</span>
         </div>
 
       </template>

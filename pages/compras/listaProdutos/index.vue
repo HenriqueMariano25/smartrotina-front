@@ -21,8 +21,9 @@ onMounted(() => {
 })
 
 const nomeListaProdutos = useState('nomeListaProdutos')
-const tituloPagina = useTituloPagina()
-tituloPagina.value = `Produtos da lista: ${nomeListaProdutos.value}`
+const dadosPagina = useDadosPagina();
+dadosPagina.value.titulo = `Produtos da lista: ${nomeListaProdutos.value}`
+dadosPagina.value.icone = 'ic:round-home'
 
 async function handleBuscarProdutos() {
   if (listaProdutosId.value) {
@@ -75,7 +76,7 @@ const editandoValorProduto = (item: IProduto) => {
 }
 
 const handleEditarValorProduto = async () => {
-  if(produtoEditandoValor?.value?.id) {
+  if (produtoEditandoValor?.value?.id) {
     await editarValorProduto(produtoEditandoValor?.value?.id, novoValorProduto.value)
 
     const index = produtos.value.findIndex(produto => produto.id === produtoEditandoValor.value?.id)
@@ -123,9 +124,10 @@ const totalValorSelecionados = computed(() => {
         <template #list="slotProps">
           <div class="flex flex-col">
             <div v-for="(item, index) in slotProps.items" :key="index">
-              <div v-if="!produtosSelecionados.some(produto => produto.id === item.id)"
-                   class="flex items-center gap-4 px-4 justify-between"
-                   :class="{'border-t border-gray-300': index !== 0}">
+              <div
+                  v-if="!produtosSelecionados.some(produto => produto.id === item.id)"
+                  class="flex items-center gap-4 px-4 justify-between"
+                  :class="{'border-t border-gray-300': index !== 0}">
                 <div class="flex items-center gap-4">
                   <Checkbox v-model="produtosSelecionados" name="size" :value="item" size="large"/>
                   <div class="flex flex-col p-2">
@@ -137,14 +139,18 @@ const totalValorSelecionados = computed(() => {
                   </div>
                 </div>
                 <div class="flex gap-2">
-                  <div class="flex gap-2" v-if="produtoEditandoValor?.id === item.id">
+                  <div v-if="produtoEditandoValor?.id === item.id" class="flex gap-2">
                     <FloatLabel variant="on">
-                      <InputNumber v-model="novoValorProduto" id="valorParaAlterar" class="w-full" show-buttons mode="currency" currency="BRL"
-                                   locale="pt-BR"
-                                   :max-fraction-digits="2"/>
+                      <InputNumber
+                          id="valorParaAlterar" v-model="novoValorProduto" class="w-full" show-buttons
+                          mode="currency" currency="BRL"
+                          locale="pt-BR"
+                          :max-fraction-digits="2"/>
                       <label for="valor">Editar valor</label>
                     </FloatLabel>
-                    <Button v-tooltip.left="{ value: 'Salvar', showDelay: 800}" class="!p-1" @click="handleEditarValorProduto()">
+                    <Button
+                        v-tooltip.left="{ value: 'Salvar', showDelay: 800}" class="!p-1"
+                        @click="handleEditarValorProduto()">
                       <Icon :icon="ICONES.SALVAR" width="32"/>
                     </Button>
                     <Button v-tooltip.left="{ value: 'Cancelar', showDelay: 800}" text class="!p-1">
@@ -152,12 +158,14 @@ const totalValorSelecionados = computed(() => {
                     </Button>
                   </div>
                   <template v-if="produtoEditandoValor?.id !== item.id">
-                    <Button v-tooltip.left="{ value: 'Atualizar valor', showDelay: 800}" text class="!p-1"
-                            @click="editandoValorProduto(item)">
+                    <Button
+                        v-tooltip.left="{ value: 'Atualizar valor', showDelay: 800}" text class="!p-1"
+                        @click="editandoValorProduto(item)">
                       <Icon icon="ri:money-dollar-circle-line" width="32"/>
                     </Button>
-                    <Button v-tooltip.left="{ value: 'Editar', showDelay: 800}" text class="!p-1"
-                            @click="editandoProduto(item.id)">
+                    <Button
+                        v-tooltip.left="{ value: 'Editar', showDelay: 800}" text class="!p-1"
+                        @click="editandoProduto(item.id)">
                       <Icon :icon="ICONES.EDITAR" width="32"/>
                     </Button>
                   </template>
@@ -185,7 +193,9 @@ const totalValorSelecionados = computed(() => {
         <template #list="slotProps">
           <div class="flex flex-col">
             <div v-for="(item, index) in slotProps.items" :key="index">
-              <div class="flex items-center gap-4 bg-gray-100 text-gray-500 px-4 justify-between" :class="{'border-t border-gray-300': index !== 0}">
+              <div
+                  class="flex items-center gap-4 bg-gray-100 text-gray-500 px-4 justify-between"
+                  :class="{'border-t border-gray-300': index !== 0}">
                 <div class="flex items-center gap-4 px-4  ">
                   <Checkbox v-model="produtosSelecionados" :value="item" name="size" size="large"/>
                   <div class="flex flex-col p-2">
@@ -197,14 +207,18 @@ const totalValorSelecionados = computed(() => {
                   </div>
                 </div>
                 <div class="flex gap-2">
-                  <div class="flex gap-2" v-if="produtoEditandoValor?.id === item.id">
+                  <div v-if="produtoEditandoValor?.id === item.id" class="flex gap-2">
                     <FloatLabel variant="on">
-                      <InputNumber v-model="novoValorProduto" id="valorParaAlterar" class="w-full" show-buttons mode="currency" currency="BRL"
-                                   locale="pt-BR"
-                                   :max-fraction-digits="2"/>
+                      <InputNumber
+                          id="valorParaAlterar" v-model="novoValorProduto" class="w-full" show-buttons
+                          mode="currency" currency="BRL"
+                          locale="pt-BR"
+                          :max-fraction-digits="2"/>
                       <label for="valor">Editar valor</label>
                     </FloatLabel>
-                    <Button v-tooltip.left="{ value: 'Salvar', showDelay: 800}" class="!p-1" @click="handleEditarValorProduto()">
+                    <Button
+                        v-tooltip.left="{ value: 'Salvar', showDelay: 800}" class="!p-1"
+                        @click="handleEditarValorProduto()">
                       <Icon :icon="ICONES.SALVAR" width="32"/>
                     </Button>
                     <Button v-tooltip.left="{ value: 'Cancelar', showDelay: 800}" text class="!p-1">
@@ -212,12 +226,14 @@ const totalValorSelecionados = computed(() => {
                     </Button>
                   </div>
                   <template v-if="produtoEditandoValor?.id !== item.id">
-                    <Button v-tooltip.left="{ value: 'Atualizar valor', showDelay: 800}" text class="!p-1"
-                            @click="editandoValorProduto(item)">
+                    <Button
+                        v-tooltip.left="{ value: 'Atualizar valor', showDelay: 800}" text class="!p-1"
+                        @click="editandoValorProduto(item)">
                       <Icon icon="ri:money-dollar-circle-line" width="32"/>
                     </Button>
-                    <Button v-tooltip.left="{ value: 'Editar', showDelay: 800}" text class="!p-1"
-                            @click="editandoProduto(item.id)">
+                    <Button
+                        v-tooltip.left="{ value: 'Editar', showDelay: 800}" text class="!p-1"
+                        @click="editandoProduto(item.id)">
                       <Icon :icon="ICONES.EDITAR" width="32"/>
                     </Button>
                   </template>
@@ -230,10 +246,12 @@ const totalValorSelecionados = computed(() => {
       </DataView>
     </div>
     <BarraCarrinhoCompra :total-selecionados="produtosSelecionados.length" :total-valor="totalValorSelecionados"/>
-    <DialogCadastrarProduto v-model:visible="mostrarDialogCadastrarProduto" @cadastrado="itemCadastrado"
-                            :lista-produtos-id="listaProdutosId"/>
-    <DialogEditarProduto :produto-id="produtoSelecionadoId" v-model:visible="mostrarDialogEditarProduto"
-                         @editado="itemEditado"/>
+    <DialogCadastrarProduto
+        v-model:visible="mostrarDialogCadastrarProduto" :lista-produtos-id="listaProdutosId"
+        @cadastrado="itemCadastrado"/>
+    <DialogEditarProduto
+        v-model:visible="mostrarDialogEditarProduto" :produto-id="produtoSelecionadoId"
+        @editado="itemEditado"/>
     <Toast/>
   </div>
 </template>

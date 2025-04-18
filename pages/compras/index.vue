@@ -19,8 +19,9 @@ listasProdutos.value = await buscarListaProdutosPorUsuarioLogado()
 
 const mostrarDialogCadastrarListaProdutos = ref(false)
 const mostrarDialogEditarListaProdutos = ref(false)
-const tituloPagina = useTituloPagina()
-tituloPagina.value = 'Listas de compras'
+const dadosPagina = useDadosPagina();
+dadosPagina.value.titulo = 'Lista compras'
+dadosPagina.value.icone = 'ic:round-checklist'
 
 const menuOpcoes = ref()
 const opcoesItemTabela = ref([
@@ -94,11 +95,11 @@ const listaProdutosEditada = (item: IListaProdutos) => {
         <span>Lista</span>
       </Button>
       <DialogCadastrarListaProdutos
-v-model:visible="mostrarDialogCadastrarListaProdutos"
-                                    @cadastrado="listaProdutosCadastrada"/>
+          v-model:visible="mostrarDialogCadastrarListaProdutos"
+          @cadastrado="listaProdutosCadastrada"/>
       <DialogEditarListaProdutos
-v-model:visible="mostrarDialogEditarListaProdutos"
-                                 :lista-produtos-id="listaProdutos?.id" @editado="listaProdutosEditada"/>
+          v-model:visible="mostrarDialogEditarListaProdutos"
+          :lista-produtos-id="listaProdutos?.id" @editado="listaProdutosEditada"/>
     </div>
     <DataTable :value="listasProdutos" table-style="min-width: 50rem" show-gridlines striped-rows size="small">
       <template #empty> Nenhum lista de compras adicionadas.</template>

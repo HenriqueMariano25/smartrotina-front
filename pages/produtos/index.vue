@@ -7,11 +7,14 @@ import DialogCadastrarProduto from "~/pages/produtos/components/DialogCadastrarP
 import {useToast} from "primevue/usetoast";
 import {ref} from "vue";
 import DialogEditarProduto from "~/pages/produtos/components/DialogEditarProduto.vue";
-import {deletarMorador} from "~/composable/residencias/deletarMorador";
 import {deletarProduto} from "~/composable/produtos/deletarProduto";
 
 const toast = useToast();
 const menuOpcoes = ref();
+const dadosPagina = useDadosPagina();
+dadosPagina.value.titulo = 'Produtos'
+dadosPagina.value.icone = 'fluent:food-apple-20-filled'
+
 const mostrarDialogCadastrarProduto = ref(false)
 const mostrarDialogEditarProduto = ref(false)
 const opcoesItemTabela = ref([
