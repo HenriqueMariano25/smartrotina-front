@@ -2,11 +2,13 @@
 import {Icon} from "@iconify/vue";
 import {DataView} from "primevue";
 import {ref} from "vue";
-import DialogCadastrarProduto from "~/pages/compras/listaProdutos/components/DialogCadastrarProduto.vue";
+import DialogAdicionarProdutoListaProduto
+  from "~/pages/compras/listaProdutos/components/DialogAdicionarProdutoListaProduto.vue";
 import type {IProduto} from "~/interfaces/produtos/produto.interface";
 import {buscarProdutosPorListaProdutos} from "~/composable/compras/buscarProdutosPorListaProdutos";
 import {ICONES} from "~/constants/icones";
-import DialogEditarProduto from "~/pages/compras/listaProdutos/components/DialogEditarProduto.vue";
+import DialogEditarProdutoListaProduto
+  from "~/pages/compras/listaProdutos/components/DialogEditarProdutoListaProduto.vue";
 import {useToast} from "primevue/usetoast";
 import {editarValorProduto} from "~/composable/compras/editarValorProduto";
 import BarraCarrinhoCompra from "~/pages/compras/components/BarraCarrinhoCompra.vue";
@@ -23,7 +25,7 @@ onMounted(() => {
 const nomeListaProdutos = useState('nomeListaProdutos')
 const dadosPagina = useDadosPagina();
 dadosPagina.value.titulo = `Produtos da lista: ${nomeListaProdutos.value}`
-dadosPagina.value.icone = 'ic:round-home'
+dadosPagina.value.icone = 'ic:round-checklist'
 
 async function handleBuscarProdutos() {
   if (listaProdutosId.value) {
@@ -131,10 +133,12 @@ const totalValorSelecionados = computed(() => {
                 <div class="flex items-center gap-4">
                   <Checkbox v-model="produtosSelecionados" name="size" :value="item" size="large"/>
                   <div class="flex flex-col p-2">
-                    <span class="font-bold">{{ item.nome }}</span>
+                    <span class="font-bold">{{ item.produto?.nome }}</span>
                     <div>
                       <span>Quantidade: {{ item.quantidade }} {{ item.unidade }}</span>
-                      <span v-if="item.observacao" class="text-sm"> - Obs: {{ item.observacao }}</span>
+                      <span v-if="item.produto?.observacao" class="text-sm"> - Obs: {{
+                          item.produto?.observacao
+                        }}</span>
                     </div>
                   </div>
                 </div>
@@ -196,13 +200,13 @@ const totalValorSelecionados = computed(() => {
               <div
                   class="flex items-center gap-4 bg-gray-100 text-gray-500 px-4 justify-between"
                   :class="{'border-t border-gray-300': index !== 0}">
-                <div class="flex items-center gap-4 px-4  ">
+                <div class="flex items-center gap-4 ">
                   <Checkbox v-model="produtosSelecionados" :value="item" name="size" size="large"/>
                   <div class="flex flex-col p-2">
-                    <span class="font-bold line-through">{{ item.nome }}</span>
+                    <span class="font-bold line-through">{{ item.produto.nome }}</span>
                     <div>
                       <span>Quantidade: {{ item.quantidade }} {{ item.unidade }}</span>
-                      <span v-if="item.observacao" class="text-sm"> - Obs: {{ item.observacao }}</span>
+                      <span v-if="item.produto.observacao" class="text-sm"> - Obs: {{ item.produto?.observacao }}</span>
                     </div>
                   </div>
                 </div>
@@ -246,11 +250,13 @@ const totalValorSelecionados = computed(() => {
       </DataView>
     </div>
     <BarraCarrinhoCompra :total-selecionados="produtosSelecionados.length" :total-valor="totalValorSelecionados"/>
-    <DialogCadastrarProduto
+    <DialogAdicionarProdutoListaProduto
         v-model:visible="mostrarDialogCadastrarProduto" :lista-produtos-id="listaProdutosId"
         @cadastrado="itemCadastrado"/>
-    <DialogEditarProduto
-        v-model:visible="mostrarDialogEditarProduto" :produto-id="produtoSelecionadoId"
+    <DialogEditarProdutoListaProduto
+        v-model:visible="mostrarDialogEditarProduto"
+        :produto-id="produtoSelecionadoId"
+        :lista-produto-id="listaProdutosId"
         @editado="itemEditado"/>
     <Toast/>
   </div>

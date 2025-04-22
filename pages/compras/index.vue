@@ -101,23 +101,25 @@ const listaProdutosEditada = (item: IListaProdutos) => {
           v-model:visible="mostrarDialogEditarListaProdutos"
           :lista-produtos-id="listaProdutos?.id" @editado="listaProdutosEditada"/>
     </div>
-    <DataTable :value="listasProdutos" table-style="min-width: 50rem" show-gridlines striped-rows size="small">
-      <template #empty> Nenhum lista de compras adicionadas.</template>
-      <Column header="" class="w-0">
-        <template #body="{ data }">
-          <Button text class="!p-1" @click="toggleMenuOpcoesMorador($event, data )">
-            <Icon :icon="ICONES.MAIS_OPCOES" style="color: #000000" width=""/>
-          </Button>
-        </template>
-      </Column>
-      <Column field="nome" header="Nome"/>
-      <Column field="quantidadeProdutos" header="Quant. Produtos"/>
-      <Column field="responsavel" header="Responsável">
-        <template #body="{ data }">
-          <span>{{ data?.responsavel?.nome || '-' }}</span>
-        </template>
-      </Column>
-    </DataTable>
+    <div class="bg-white p-1 rounded">
+      <DataTable :value="listasProdutos" table-style="min-width: 50rem" show-gridlines striped-rows size="small">
+        <template #empty> Nenhum lista de compras adicionadas.</template>
+        <Column header="" class="w-0">
+          <template #body="{ data }">
+            <Button text class="!p-1" @click="toggleMenuOpcoesMorador($event, data )">
+              <Icon :icon="ICONES.MAIS_OPCOES" style="color: #000000" width=""/>
+            </Button>
+          </template>
+        </Column>
+        <Column field="nome" header="Nome"/>
+        <Column field="quantidadeProdutos" header="Quant. Produtos"/>
+        <Column field="responsavel" header="Responsável">
+          <template #body="{ data }">
+            <span>{{ data?.responsavel?.nome || '-' }}</span>
+          </template>
+        </Column>
+      </DataTable>
+    </div>
     <div>
       <Menu id="overlay_tmenu" ref="menuOpcoes" :model="opcoesItemTabela" popup>
         <template #item="{ item, props }">

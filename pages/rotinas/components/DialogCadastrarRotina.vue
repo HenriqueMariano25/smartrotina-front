@@ -120,10 +120,7 @@ watch(() => dados.residenciaId, async (valor) => {
 })
 
 const handleCadastrarRotina = async () => {
-  console.log(dados)
   const dadosPrCadastrar: ICadastrarRotina = limparDados(dados)
-  console.log(dados)
-
   const itemCadastrado = await cadastrarRotina(dadosPrCadastrar)
   emit('cadastrado', itemCadastrado)
 }
@@ -131,37 +128,44 @@ const handleCadastrarRotina = async () => {
 </script>
 
 <template>
-  <Dialog class="w-6/12" :visible="visible" modal header="Cadastrar rotina" @update:visible="(value) => emit('update:visible', value)">
+  <Dialog
+class="w-6/12" :visible="visible" modal header="Cadastrar rotina"
+          @update:visible="(value) => emit('update:visible', value)">
     <div class="flex flex-col gap-4">
       <div class="flex flex-col gap-4 pt-1.5">
         <FloatLabel variant="on">
-          <InputText v-model="dados.nome" id="rotina" class="w-full"/>
+          <InputText id="rotina" v-model="dados.nome" class="w-full"/>
           <label for="rotina" class="required">Nome da rotina</label>
         </FloatLabel>
         <FloatLabel variant="on">
-          <DatePicker v-model="dados.dataInicio" show-icon fluid name="dataInicio" :min-date="new Date()" date-format="dd/mm/yy"/>
+          <DatePicker
+v-model="dados.dataInicio" show-icon fluid name="dataInicio" :min-date="new Date()"
+                      date-format="dd/mm/yy"/>
           <label for="dataInicio" class="required">Data de início</label>
         </FloatLabel>
         <FloatLabel variant="on">
-          <DatePicker v-model="dados.dataTermino" show-icon fluid name="dataTermino" :min-date="dados.dataInicio" date-format="dd/mm/yy"/>
+          <DatePicker
+v-model="dados.dataTermino" show-icon fluid name="dataTermino" :min-date="dados.dataInicio"
+                      date-format="dd/mm/yy"/>
           <label for="dataTermino">Data de término</label>
         </FloatLabel>
         <div class="flex gap-4">
           <FloatLabel variant="on">
-            <DatePicker v-model="dados.horaInicio" id="datepicker-timeonly" timeOnly fluid/>
+            <DatePicker id="datepicker-timeonly" v-model="dados.horaInicio" time-only fluid/>
             <label for="dataTermino">Hora de inicio</label>
           </FloatLabel>
           <FloatLabel variant="on">
-            <DatePicker v-model="dados.horaTermino" id="datepicker-timeonly" timeOnly fluid/>
+            <DatePicker id="datepicker-timeonly" v-model="dados.horaTermino" time-only fluid/>
             <label for="dataTermino">Hora de término</label>
           </FloatLabel>
         </div>
         <div class="flex flex-col">
           <span class="pl-1 font-bold">Repetição</span>
           <SelectButton v-model="dados.repeticao" :options="opcoes" aria-labelledby="custom" size="large"/>
-          <div class="flex gap-2 w-full mt-2" v-if="dados.repeticao === 'semanal'">
+          <div v-if="dados.repeticao === 'semanal'" class="flex gap-2 w-full mt-2">
             <div v-for="dia of diasDaSemana" :key="dia.valor">
-              <div class="bg-primaria-100 rounded-full py-2 px-4 hover:bg-primaria-200 cursor-pointer"
+              <div
+class="bg-primaria-100 rounded-full py-2 px-4 hover:bg-primaria-200 cursor-pointer"
                    :class="{'!bg-primaria-400 text-white': dados.periodo.includes(dia.valor)}"
                    @click="adicionarRemoverPeriodo(dia.valor)">
                 {{ dia.sigla }}
@@ -172,7 +176,8 @@ const handleCadastrarRotina = async () => {
         <div v-if="dados.repeticao === 'mensal'" class="flex gap-2 w-full mt-2">
           <div class="grid grid-cols-7 gap-2">
             <div v-for="dia of 31" :key="dia">
-              <div class="bg-primaria-100 rounded-full py-2 px-3 hover:bg-primaria-200 cursor-pointer text-center"
+              <div
+class="bg-primaria-100 rounded-full py-2 px-3 hover:bg-primaria-200 cursor-pointer text-center"
                    :class="{'!bg-primaria-400 text-white': dados.periodo.includes(dia)}"
                    @click="adicionarRemoverPeriodo(dia)">
                 {{ dia }}
@@ -184,7 +189,8 @@ const handleCadastrarRotina = async () => {
           <span class="pl-1 font-bold">Intervalo</span>
           <div class="flex gap-4 items-center">
             <span class="text-nowrap font-medium">A cada</span>
-            <InputNumber v-model="dados.intervalo" input-id="horizontal-buttons" show-buttons button-layout="horizontal"
+            <InputNumber
+v-model="dados.intervalo" input-id="horizontal-buttons" show-buttons button-layout="horizontal"
                          :step="1" mode="decimal" fluid>
               <template #incrementbuttonicon>
                 <Icon :icon="ICONES.MAIS" width="24"/>
@@ -197,17 +203,19 @@ const handleCadastrarRotina = async () => {
           </div>
         </div>
         <FloatLabel variant="on">
-          <Select v-model="dados.residenciaId" :options="residencias" name="residencia" filter option-label="nome"
+          <Select
+v-model="dados.residenciaId" :options="residencias" name="residencia" filter option-label="nome"
                   option-value="id" class="w-full"/>
           <label for="residencia">Residência</label>
         </FloatLabel>
         <FloatLabel variant="on">
-          <Select v-model="dados.responsavelId" :options="moradores" name="responsavel" filter option-label="nome"
+          <Select
+v-model="dados.responsavelId" :options="moradores" name="responsavel" filter option-label="nome"
                   option-value="id" class="w-full" :disabled="!dados.residenciaId || dados.responsavelId === ''"/>
           <label for="responsavel">Responsável</label>
         </FloatLabel>
         <FloatLabel variant="on" class="w-full">
-          <Textarea v-model="dados.observacao" id="observacao" rows="3" class="w-full"/>
+          <Textarea id="observacao" v-model="dados.observacao" rows="3" class="w-full"/>
           <label for="observacao">Observação</label>
         </FloatLabel>
       </div>

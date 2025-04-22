@@ -6,18 +6,22 @@ import DialogTiposProdutos from "~/pages/compras/listaProdutos/components/Dialog
 import type {ITipoProduto} from "~/interfaces/compras/tipoProduto.interface";
 import {buscarTipoProdutoPorUsuario} from "~/composable/compras/buscarTipoProdutoPorUsuario";
 import type {IProduto} from "~/interfaces/produtos/produto.interface";
-import {buscarUmProduto} from "~/composable/compras/listaProdutos/buscarUmProduto";
-import type {IEditarProduto} from "~/interfaces/compras/listaProdutos/editarProduto.interface";
-import {editarProduto} from "~/composable/compras/listaProdutos/editarProduto";
+import {buscarUmProdutoListaProdutos} from "~/composable/compras/listaProdutos/buscarUmProdutoListaProdutos";
+import type {
+  IEditarProduto,
+  IEditarProdutoLista
+} from "~/interfaces/compras/listaProdutos/editarProdutoLista.interface";
+import {editarProdutoLista} from "~/composable/compras/listaProdutos/editarProdutoLista";
 
 const props = defineProps({
   visible: Boolean,
+  listaProdutoId: Number,
   produtoId: Number
 })
 // const emits = defineEmits(['update:visible'])
 const emit = defineEmits<{
   (e: 'update:visible', value: boolean): void
-  (e: 'cadastrado', produto: IProduto): void
+  (e: 'editado', produto: IProduto): void
 }>()
 
 const tiposUnidade = ref([
@@ -29,6 +33,7 @@ const tiposUnidade = ref([
   {nome: 'pacote', abreviacao: 'PC'},
 ])
 const dados = reactive({
+  produtoListaProdutoId: null,
   nome: '',
   tipoProdutoId: null,
   quantidade: 1,
@@ -40,8 +45,8 @@ const camposObrigatorio = ['nome', 'tipoProdutoId', 'quantidade', 'tipoUnidade']
 const mostrarDialogTiposProdutos = ref<boolean>(false)
 const tiposProdutos = ref<ITipoProduto[] | []>([])
 
-onBeforeMount(() => {
-  handleBuscaTiposProdutos()
+onBeforeMount(async () => {
+  await handleBuscaTiposProdutos()
 })
 
 async function handleBuscaTiposProdutos() {
@@ -52,32 +57,36 @@ const desabilitarBtn = computed(() => {
   return temCampoInvalido(dados, camposObrigatorio)
 })
 
+const produtoId = ref<number | null>(null)
 watch(() => props.visible, async (valor) => {
   if (valor && props.produtoId) {
-    const produtoBuscado = await buscarUmProduto(props.produtoId)
-    dados.nome = produtoBuscado.nome
+    const produtoBuscado = await buscarUmProdutoListaProdutos(props.produtoId)
+    dados.produtoListaProdutoId = produtoBuscado.id
+    dados.nome = produtoBuscado.produto?.nome
     dados.quantidade = produtoBuscado.quantidade
-    dados.tipoProdutoId = produtoBuscado.tipoProdutoId
+    dados.tipoProdutoId = produtoBuscado.produto?.tipoProdutoId
     dados.valor = produtoBuscado.valor || 0
-    dados.observacao = produtoBuscado.observacao
+    dados.observacao = produtoBuscado.produto?.observacao
     dados.unidade = produtoBuscado.unidade
+
+    produtoId.value = produtoBuscado.produtoId
   }
 })
 
 const handleEditar = async () => {
-  if (props.produtoId) {
-    const dadosPrEditar: IEditarProduto = limparDados(dados)
-    const itemEditado = await editarProduto(props?.produtoId, dadosPrEditar)
+  if (produtoId.value && props.listaProdutoId) {
+    const dadosPrEditar: IEditarProdutoLista = limparDados(dados)
+    const itemEditado = await editarProdutoLista(props?.listaProdutoId, produtoId.value, dadosPrEditar)
     emit('editado', itemEditado)
   }
-
 }
 
 </script>
 
 <template>
-  <Dialog class="w-6/12 bg-gray-200 " :visible="visible" modal header="Editar produto"
-          @update:visible="(value) => emit('update:visible', value)">
+  <Dialog
+      class="w-6/12 bg-gray-200 " :visible="visible" modal header="Editar produto"
+      @update:visible="(value) => emit('update:visible', value)">
     <div class="flex flex-col gap-4 pt-1.5">
       <FloatLabel variant="on">
         <InputText id="nome" v-model="dados.nome" class="w-full"/>
@@ -85,9 +94,10 @@ const handleEditar = async () => {
       </FloatLabel>
       <div class="flex gap-4">
         <FloatLabel variant="on" class="w-full">
-          <Select id="tipoProduto" v-model="dados.tipoProdutoId" :options="tiposProdutos" filter option-value="id"
-                  option-label="descricao"
-                  class="w-full"/>
+          <Select
+              id="tipoProduto" v-model="dados.tipoProdutoId" :options="tiposProdutos" filter option-value="id"
+              option-label="descricao"
+              class="w-full"/>
           <label for="tipoProduto" class="required">Tipo de produto</label>
         </FloatLabel>
         <Button severity="primary" @click="mostrarDialogTiposProdutos = true">
@@ -96,20 +106,23 @@ const handleEditar = async () => {
       </div>
       <div class="flex gap-4 w-full">
         <FloatLabel variant="on">
-          <InputNumber id="quantidade" v-model="dados.quantidade" class="w-full" :min="1" show-buttons
-                       :max-fraction-digits="2"/>
+          <InputNumber
+              id="quantidade" v-model="dados.quantidade" class="w-full" :min="1" show-buttons
+              :max-fraction-digits="2"/>
           <label for="quantidade" class="required">Quantidade</label>
         </FloatLabel>
         <FloatLabel variant="on" class="w-full">
-          <Select id="tipoUnidade" v-model="dados.unidade" :options="tiposUnidade" option-value="nome"
-                  option-label="nome"
-                  class="w-full"/>
+          <Select
+              id="tipoUnidade" v-model="dados.unidade" :options="tiposUnidade" option-value="nome"
+              option-label="nome"
+              class="w-full"/>
           <label for="tipoUnidade" class="required">Tipo de unidade</label>
         </FloatLabel>
         <FloatLabel variant="on">
-          <InputNumber id="valor" v-model="dados.valor" class="w-full" show-buttons mode="currency" currency="BRL"
-                       locale="pt-BR"
-                       :max-fraction-digits="2"/>
+          <InputNumber
+              id="valor" v-model="dados.valor" class="w-full" show-buttons mode="currency" currency="BRL"
+              locale="pt-BR"
+              :max-fraction-digits="2"/>
           <label for="valor">Valor</label>
         </FloatLabel>
       </div>
@@ -131,8 +144,9 @@ const handleEditar = async () => {
       </div>
     </div>
   </Dialog>
-  <DialogTiposProdutos v-model:visible="mostrarDialogTiposProdutos"
-                       @atualizar-tipos-produtos="handleBuscaTiposProdutos"/>
+  <DialogTiposProdutos
+      v-model:visible="mostrarDialogTiposProdutos"
+      @atualizar-tipos-produtos="handleBuscaTiposProdutos"/>
 </template>
 
 <style scoped>

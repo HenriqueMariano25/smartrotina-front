@@ -45,8 +45,6 @@ async function handleBuscaTiposProdutos() {
 }
 
 watch(() => props.visible, async (valor) => {
-  console.log("Aquiii")
-
   if (valor && props.produtoId) {
     const produtoBuscado = await buscarUmProduto(props.produtoId)
     dados.nome = produtoBuscado.nome
