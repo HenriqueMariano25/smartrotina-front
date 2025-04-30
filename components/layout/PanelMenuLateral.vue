@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {ref} from 'vue';
 import {Icon} from "@iconify/vue";
-import { useRouter} from "#vue-router";
+import {useRouter} from "#vue-router";
 
 const router = useRouter();
 
@@ -29,6 +29,13 @@ const items = ref([
         icon: 'fluent:food-apple-20-filled',
         command: () => {
           router.push('/produtos');
+        }
+      },
+      {
+        label: 'Mercados',
+        icon: 'ic:round-point-of-sale',
+        command: () => {
+          router.push('/mercados');
         }
       },
     ]

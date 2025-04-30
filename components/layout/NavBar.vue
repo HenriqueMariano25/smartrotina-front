@@ -37,7 +37,6 @@ const autenticacao = useAutenticacaoStore()
 const nomeFormatado = autenticacao.usuario?.nome.split(' ')[0];
 
 const dadosPagina = useDadosPagina()
-// const iconePagina = useTituloPagina()
 
 </script>
 
