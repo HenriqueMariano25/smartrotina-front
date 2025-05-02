@@ -1,6 +1,6 @@
 import {axiosApi} from "~/services/axiosApi";
-import type {IProduto} from "~/interfaces/produtos/produto.interface";
+import type {IProdutoListaProduto} from "~/interfaces/compras/listaProdutos/produtoListaProduto";
 
-export const buscarProdutosPorListaProdutos = async (listaProdutosId: number): Promise<IProduto[] | []> => {
+export const buscarProdutosPorListaProdutos = async (listaProdutosId: number): Promise<IProdutoListaProduto[] | []> => {
   return await axiosApi(`/lista-produtos/${listaProdutosId}/produtos`, {method: 'GET'})
 }

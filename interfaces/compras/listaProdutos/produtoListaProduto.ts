@@ -11,4 +11,5 @@ export interface IProdutoListaProduto {
   };
   listaProdutosId: number;
   statusProdutoListaId: number;
+  compraId: number | null
 }

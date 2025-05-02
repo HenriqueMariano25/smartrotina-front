@@ -12,11 +12,14 @@ import DialogEditarProdutoListaProduto
 import {useToast} from "primevue/usetoast";
 import {editarValorProduto} from "~/composable/compras/editarValorProduto";
 import BarraCarrinhoCompra from "~/pages/compras/components/BarraCarrinhoCompra.vue";
+import type {IProdutoListaProduto} from "~/interfaces/compras/listaProdutos/produtoListaProduto";
+import {editarStatusProdutoListaProdutos} from "~/composable/compras/listaProdutos/editarStatusProdutoListaProdutos";
 
 const toast = useToast();
 const listaProdutosId = useState<number>("listaProdutosId");
-const produtos = ref<IProduto[]>([])
-
+const produtos = ref<IProdutoListaProduto[]>([])
+const produtosSelecionados = ref<IProdutoListaProduto[]>([])
+const produtosComprados = ref(<IProdutoListaProduto[]>([]))
 
 onMounted(() => {
   handleBuscarProdutos()
@@ -29,7 +32,10 @@ dadosPagina.value.icone = 'ic:round-checklist'
 
 async function handleBuscarProdutos() {
   if (listaProdutosId.value) {
-    produtos.value = await buscarProdutosPorListaProdutos(listaProdutosId?.value)
+    const todosProdutos = await buscarProdutosPorListaProdutos(listaProdutosId?.value)
+    produtos.value = todosProdutos.filter(item => item.compraId === null)
+    produtosSelecionados.value = todosProdutos.filter(item => item.statusProdutoListaId === 2)
+    produtosComprados.value = todosProdutos.filter(item => item.compraId !== null)
   }
 }
 
@@ -62,7 +68,7 @@ const itemEditado = (item: IProduto) => {
   });
 }
 
-const produtosSelecionados = ref([])
+
 const produtoSelecionadoId = ref<number | undefined>(undefined)
 
 const editandoProduto = (id: number) => {
@@ -99,6 +105,22 @@ const totalValorSelecionados = computed(() => {
   }, 0)
 })
 
+async function atualizarStatus(item: IProdutoListaProduto, statusProdutoListaId: number) {
+  await editarStatusProdutoListaProdutos(item.id, statusProdutoListaId)
+}
+
+async function eProdutosComprados() {
+  produtosComprados.value.push(...produtosSelecionados.value)
+  produtosSelecionados.value = []
+
+  toast.add({
+    severity: 'success',
+    summary: 'Sucesso ao realizar compra',
+    detail: 'Compra registrada com sucesso',
+    life: 4000
+  });
+}
+
 </script>
 
 <template>
@@ -113,7 +135,7 @@ const totalValorSelecionados = computed(() => {
     </div>
     <div class="p-1 bg-white rounded">
       <div class="bg-primaria-200 rounded px-2 py-1 text-lg font-medium flex gap-2 items-center">
-        <Icon icon="ic:round-checklist" width="28"/>
+        <Icon icon="ic:baseline-format-list-numbered" width="28"/>
         <span>Produtos pendentes</span>
         <span class="ml-auto">Total: {{ produtos.length - produtosSelecionados.length }}</span>
       </div>
@@ -131,7 +153,9 @@ const totalValorSelecionados = computed(() => {
                   class="flex items-center gap-4 px-4 justify-between"
                   :class="{'border-t border-gray-300': index !== 0}">
                 <div class="flex items-center gap-4">
-                  <Checkbox v-model="produtosSelecionados" name="size" :value="item" size="large"/>
+                  <Checkbox
+                      v-model="produtosSelecionados" name="size" :value="item" size="large"
+                      @change="atualizarStatus(item, 2)"/>
                   <div class="flex flex-col p-2">
                     <span class="font-bold">{{ item.produto?.nome }}</span>
                     <div>
@@ -173,7 +197,6 @@ const totalValorSelecionados = computed(() => {
                       <Icon :icon="ICONES.EDITAR" width="32"/>
                     </Button>
                   </template>
-
                 </div>
               </div>
             </div>
@@ -201,7 +224,9 @@ const totalValorSelecionados = computed(() => {
                   class="flex items-center gap-4 bg-gray-100 text-gray-500 px-4 justify-between"
                   :class="{'border-t border-gray-300': index !== 0}">
                 <div class="flex items-center gap-4 ">
-                  <Checkbox v-model="produtosSelecionados" :value="item" name="size" size="large"/>
+                  <Checkbox
+                      v-model="produtosSelecionados" :value="item" name="size" size="large"
+                      @change="atualizarStatus(item, 1)"/>
                   <div class="flex flex-col p-2">
                     <span class="font-bold line-through">{{ item.produto.nome }}</span>
                     <div>
@@ -241,7 +266,6 @@ const totalValorSelecionados = computed(() => {
                       <Icon :icon="ICONES.EDITAR" width="32"/>
                     </Button>
                   </template>
-
                 </div>
               </div>
             </div>
@@ -249,7 +273,43 @@ const totalValorSelecionados = computed(() => {
         </template>
       </DataView>
     </div>
-    <BarraCarrinhoCompra :total-selecionados="produtosSelecionados.length" :total-valor="totalValorSelecionados"/>
+    <div class="p-1 bg-white rounded">
+      <div class="bg-primaria-200 rounded px-2 py-1 text-lg font-medium flex gap-2 items-center">
+        <Icon icon="ic:round-monetization-on" width="28"/>
+        <span>Produtos comprados</span>
+        <span class="ml-auto">Total: {{ produtosComprados.length }}</span>
+      </div>
+      <DataView :value="produtosComprados" data-key="id">
+        <template #empty>
+          <div class="py-1 px-2">
+            <span class="text-lg font-medium">Nenhum produto selecionado.</span>
+          </div>
+
+        </template>
+        <template #list="slotProps">
+          <div class="flex flex-col">
+            <div v-for="(item, index) in slotProps.items" :key="index">
+              <div
+                  class="flex items-center gap-4 bg-gray-100 text-gray-500 px-4 justify-between"
+                  :class="{'border-t border-gray-300': index !== 0}">
+                <div class="flex items-center gap-4 ">
+                  <div class="flex flex-col p-2">
+                    <span class="font-bold line-through">{{ item.produto.nome }}</span>
+                    <div>
+                      <span>Quantidade: {{ item.quantidade }} {{ item.unidade }}</span>
+                      <span v-if="item.produto.observacao" class="text-sm"> - Obs: {{ item.produto?.observacao }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </DataView>
+    </div>
+    <BarraCarrinhoCompra :total-selecionados="produtosSelecionados.length" :total-valor="totalValorSelecionados"
+                         :produtos-lista-produtos="produtosSelecionados.map(item => item.id)"
+                         @comprado="eProdutosComprados"/>
     <DialogAdicionarProdutoListaProduto
         v-model:visible="mostrarDialogCadastrarProduto" :lista-produtos-id="listaProdutosId"
         @cadastrado="itemCadastrado"/>
