@@ -5,7 +5,7 @@ import {ICONES} from "~/constants/icones";
 import DialogTiposProdutos from "~/pages/compras/listaProdutos/components/DialogTiposProdutos.vue";
 import type {ITipoProduto} from "~/interfaces/compras/tipoProduto.interface";
 import {buscarTipoProdutoPorUsuario} from "~/composable/compras/buscarTipoProdutoPorUsuario";
-import {cadastrarProduto} from "~/composable/compras/listaProdutos/cadastrarProduto";
+import {cadastrarProdutoListaProdutos} from "~/composable/compras/listaProdutos/cadastrarProdutoListaProdutos";
 import type {ICadastrarProduto} from "~/interfaces/compras/cadastrarProduto.interface";
 import type {IProduto} from "~/interfaces/produtos/produto.interface";
 
@@ -57,7 +57,7 @@ const desabilitarBtn = computed(() => {
 const handleCadastrar = async () => {
   if (props.listaProdutosId) {
     const dadosPrCadastrar: ICadastrarProduto = limparDados(dados)
-    const itemCadastrado = await cadastrarProduto(props?.listaProdutosId, dadosPrCadastrar)
+    const itemCadastrado = await cadastrarProdutoListaProdutos(props?.listaProdutosId, dadosPrCadastrar)
     emit('cadastrado', itemCadastrado)
   }
 }
@@ -76,7 +76,8 @@ watch(() => props.visible, (valor) => {
 </script>
 
 <template>
-  <Dialog class="w-6/12 bg-gray-200 " :visible="visible" modal header="Cadastrar produto"
+  <Dialog
+class="w-6/12 bg-gray-200 " :visible="visible" modal header="Cadastrar produto"
           @update:visible="(value) => emit('update:visible', value)">
     <div class="flex flex-col gap-4 pt-1.5">
       <FloatLabel variant="on">
@@ -85,7 +86,8 @@ watch(() => props.visible, (valor) => {
       </FloatLabel>
       <div class="flex gap-4">
         <FloatLabel variant="on" class="w-full">
-          <Select id="tipoProduto" v-model="dados.tipoProdutoId" :options="tiposProdutos" filter option-value="id"
+          <Select
+id="tipoProduto" v-model="dados.tipoProdutoId" :options="tiposProdutos" filter option-value="id"
                   option-label="descricao"
                   class="w-full"/>
           <label for="tipoProduto" class="required">Tipo de produto</label>
@@ -96,18 +98,21 @@ watch(() => props.visible, (valor) => {
       </div>
       <div class="flex gap-4 w-full">
         <FloatLabel variant="on">
-          <InputNumber id="quantidade" v-model="dados.quantidade" class="w-full" :min="1" show-buttons
+          <InputNumber
+id="quantidade" v-model="dados.quantidade" class="w-full" :min="1" show-buttons
                        :max-fraction-digits="2"/>
           <label for="quantidade" class="required">Quantidade</label>
         </FloatLabel>
         <FloatLabel variant="on" class="w-full">
-          <Select id="tipoUnidade" v-model="dados.unidade" :options="tiposUnidade" option-value="nome"
+          <Select
+id="tipoUnidade" v-model="dados.unidade" :options="tiposUnidade" option-value="nome"
                   option-label="nome"
                   class="w-full"/>
           <label for="tipoUnidade" class="required">Tipo de unidade</label>
         </FloatLabel>
         <FloatLabel variant="on">
-          <InputNumber id="valor" v-model="dados.valor" class="w-full" show-buttons mode="currency" currency="BRL"
+          <InputNumber
+id="valor" v-model="dados.valor" class="w-full" show-buttons mode="currency" currency="BRL"
                        locale="pt-BR"
                        :max-fraction-digits="2"/>
           <label for="valor">Valor</label>
@@ -131,7 +136,8 @@ watch(() => props.visible, (valor) => {
       </div>
     </div>
   </Dialog>
-  <DialogTiposProdutos v-model:visible="mostrarDialogTiposProdutos"
+  <DialogTiposProdutos
+v-model:visible="mostrarDialogTiposProdutos"
                        @atualizar-tipos-produtos="handleBuscaTiposProdutos"/>
 </template>
 

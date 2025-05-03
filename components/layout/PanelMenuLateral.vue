@@ -25,6 +25,13 @@ const items = ref([
         }
       },
       {
+        label: 'Minhas compras',
+        icon: 'ic:round-monetization-on',
+        command: () => {
+          router.push('/minhasCompras');
+        }
+      },
+      {
         label: 'Produtos',
         icon: 'fluent:food-apple-20-filled',
         command: () => {
