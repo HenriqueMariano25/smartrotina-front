@@ -26,8 +26,10 @@ function toggleMenu() {
         @toggle-menu="mostrarPanelMenuLateralMobile = !mostrarPanelMenuLateralMobile"/>
     <div class="flex flex-col md:flex-row h-full ">
       <PanelMenuLateral v-if="!ehMobile"/>
-      <PanelMenuLateralMobile v-if="ehMobile" v-model:visible="mostrarPanelMenuLateralMobile"/>
-      <!--      <MenuMobile v-if="ehMobile" />-->
+      <PanelMenuLateralMobile
+          v-if="ehMobile"
+          v-model:visible="mostrarPanelMenuLateralMobile"
+          @esconder="mostrarPanelMenuLateralMobile = !mostrarPanelMenuLateralMobile"/>
       <div class="p-4 w-full">
         <slot/>
       </div>

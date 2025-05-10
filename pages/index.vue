@@ -76,7 +76,7 @@ const autenticacao = useAutenticacaoStore()
     <div class="w-full bg-white rounded p-4 text-xl font-medium shadow">
       <span>Bem vindo, {{ autenticacao.usuario?.nome }}!</span>
     </div>
-    <div class="bg-white rounded p-4 flex flex-col gap-4 shadow w-fit">
+    <div class="bg-white rounded p-4 flex flex-col gap-4 shadow w-full md:w-fit">
       <span class="font-bold text-xl">Compras por mês</span>
       <FloatLabel variant="on" class="flex w-full">
         <DatePicker

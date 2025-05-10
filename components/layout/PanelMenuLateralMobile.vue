@@ -2,18 +2,26 @@
 import {ref} from "vue";
 import {Icon} from "@iconify/vue";
 import {useRouter} from "#vue-router";
+import {useAutenticacaoStore} from "~/stores/auth";
+import type {IProduto} from "~/interfaces/produtos/produto.interface";
 
 defineProps({
   visible: Boolean
 })
 
+const emit = defineEmits<{
+  (e: 'esconder'): void
+}>()
+
 const router = useRouter();
+const autenticacao = useAutenticacaoStore()
 
 const items = ref([
   {
     label: 'Home',
     icon: 'ic:round-home',
     command: () => {
+      emit('esconder');
       router.push('/');
     }
   },
@@ -25,6 +33,7 @@ const items = ref([
         label: 'Lista de compras',
         icon: 'ic:round-checklist',
         command: () => {
+          emit('esconder');
           router.push('/compras');
         }
       },
@@ -32,6 +41,7 @@ const items = ref([
         label: 'Minhas compras',
         icon: 'ic:round-monetization-on',
         command: () => {
+          emit('esconder');
           router.push('/minhasCompras');
         }
       },
@@ -39,6 +49,7 @@ const items = ref([
         label: 'Produtos',
         icon: 'fluent:food-apple-20-filled',
         command: () => {
+          emit('esconder');
           router.push('/produtos');
         }
       },
@@ -46,6 +57,7 @@ const items = ref([
         label: 'Mercados',
         icon: 'ic:round-point-of-sale',
         command: () => {
+          emit('esconder');
           router.push('/mercados');
         }
       },
@@ -55,15 +67,24 @@ const items = ref([
     label: 'Residências',
     icon: 'ic:round-meeting-room',
     command: () => {
+      emit('esconder');
       router.push('/residencias');
     }
   },
   {
-    label: 'Perfil',
+    label: autenticacao.usuario?.nome.split(' ')[0],
     icon: 'ic:round-person',
-    command: () => {
-      router.push('/perfil');
-    }
+    items: [
+      {
+        label: 'Sair',
+        icon: 'ic:round-log-out',
+        command: async () => {
+          emit('esconder');
+          useAutenticacaoStore().logout()
+        }
+      }
+    ]
+
   }
 ]);
 </script>
