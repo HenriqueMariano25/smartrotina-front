@@ -21,6 +21,7 @@
     "@pinia/nuxt": "^0.10.1",
     "@primeuix/themes": "^1.0.0",
     "axios": "^1.8.4",
+    "chart.js": "^4.4.9",
     "dayjs-nuxt": "^2.1.11",
     "eslint": "^9.23.0",
     "nuxt": "^3.16.1",
