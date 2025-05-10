@@ -78,7 +78,7 @@ watch(() => props.visible, (valor) => {
 
 <template>
   <Dialog
-      class="w-6/12 bg-gray-200" :visible="visible" modal header="Editar produto"
+      class="w-11/12 md:w-6/12 bg-gray-200" :visible="visible" modal header="Editar produto"
       @update:visible="(value) => emit('update:visible', value)">
     <div class="flex flex-col gap-4 pt-1.5">
       <FloatLabel variant="on">

@@ -18,7 +18,7 @@ const items = ref([
     icon: 'ic:round-shopping-cart',
     items: [
       {
-        label: 'Lista de compras',
+        label: 'Listas de compras',
         icon: 'ic:round-checklist',
         command: () => {
           router.push('/compras');

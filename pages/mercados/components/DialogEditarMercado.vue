@@ -48,7 +48,7 @@ async function handleEditar() {
 
 <template>
   <Dialog
-      class="w-6/12 bg-gray-200" :visible="visible" modal header="Editar mercado"
+      class="w-11/12 md:w-6/12 bg-gray-200" :visible="visible" modal header="Editar mercado"
       @update:visible="(value) => emit('update:visible', value)">
     <div class="flex flex-col gap-4 pt-1.5">
       <FloatLabel variant="on">

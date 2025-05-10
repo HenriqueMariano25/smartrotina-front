@@ -53,30 +53,33 @@ const handleCadastrarListaProdutos = async () => {
 </script>
 
 <template>
-  <Dialog class="w-5/12 bg-gray-200 " :visible="visible" modal header="Cadastrar lista de compra"
-          @update:visible="$emit('update:visible')">
+  <Dialog
+      class="w-11/12 md:w-5/12 bg-gray-200 " :visible="visible" modal header="Cadastrar lista de compra"
+      @update:visible="$emit('update:visible')">
     <div class="flex flex-col gap-4 pt-1.5">
       <FloatLabel variant="on">
-        <InputText v-model="dados.nome" id="nomeLista" class="w-full"/>
+        <InputText id="nomeLista" v-model="dados.nome" class="w-full"/>
         <label for="nomeLista" class="required">Nome da lista</label>
       </FloatLabel>
       <FloatLabel variant="on">
-        <Select v-model="dados.residenciaId" :options="residencias" filter option-label="nome" option-value="id"
-                class="w-full"/>
+        <Select
+            v-model="dados.residenciaId" :options="residencias" filter option-label="nome" option-value="id"
+            class="w-full"/>
         <label for="on_label">Residencia</label>
       </FloatLabel>
       <FloatLabel variant="on">
-        <Select v-model="dados.responsavelId" :options="responsaveis" filter option-label="nome"
-                :disabled="!dados.residenciaId" option-value="usuarioId"
-                class="w-full"/>
+        <Select
+            v-model="dados.responsavelId" :options="responsaveis" filter option-label="nome"
+            :disabled="!dados.residenciaId" option-value="usuarioId"
+            class="w-full"/>
         <label for="on_label">Responsável</label>
       </FloatLabel>
       <FloatLabel variant="on" class="w-full">
-        <Textarea v-model="dados.observacao" id="observacao" rows="3" class="w-full"/>
+        <Textarea id="observacao" v-model="dados.observacao" rows="3" class="w-full"/>
         <label for="observacao">Observação</label>
       </FloatLabel>
       <div class="flex justify-end">
-        <Button class="" @click="handleCadastrarListaProdutos()" >
+        <Button class="" @click="handleCadastrarListaProdutos()">
           <Icon :icon="ICONES.SALVAR" width="28"/>
           <span>Salvar</span>
         </Button>

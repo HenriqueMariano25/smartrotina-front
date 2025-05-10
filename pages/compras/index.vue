@@ -20,7 +20,7 @@ listasProdutos.value = await buscarListaProdutosPorUsuarioLogado()
 const mostrarDialogCadastrarListaProdutos = ref(false)
 const mostrarDialogEditarListaProdutos = ref(false)
 const dadosPagina = useDadosPagina();
-dadosPagina.value.titulo = 'Lista compras'
+dadosPagina.value.titulo = 'Listas de compras'
 dadosPagina.value.icone = 'ic:round-checklist'
 
 const menuOpcoes = ref()
@@ -87,6 +87,10 @@ const listaProdutosEditada = (item: IListaProdutos) => {
 
 <template>
   <div class="flex flex-col w-full gap-4 h-full">
+    <!--    <div class="flex gap-4 bg-white rounded p-2 text-xl font-medium items-center">-->
+    <!--      <Icon icon="ic:round-checklist" width="32"/>-->
+    <!--      <span>Lista de compras Compras</span>-->
+    <!--    </div>-->
     <div class="flex justify-end p-2 bg-white rounded">
       <Button type="button" class="font-bold" @click="mostrarDialogCadastrarListaProdutos = true">
         <div>

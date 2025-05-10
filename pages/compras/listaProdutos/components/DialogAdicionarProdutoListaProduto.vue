@@ -77,8 +77,8 @@ watch(() => props.visible, (valor) => {
 
 <template>
   <Dialog
-class="w-6/12 bg-gray-200 " :visible="visible" modal header="Cadastrar produto"
-          @update:visible="(value) => emit('update:visible', value)">
+      class="w-11/12 md:w-6/12 bg-gray-200 " :visible="visible" modal header="Cadastrar produto"
+      @update:visible="(value) => emit('update:visible', value)">
     <div class="flex flex-col gap-4 pt-1.5">
       <FloatLabel variant="on">
         <InputText id="nome" v-model="dados.nome" class="w-full"/>
@@ -87,9 +87,9 @@ class="w-6/12 bg-gray-200 " :visible="visible" modal header="Cadastrar produto"
       <div class="flex gap-4">
         <FloatLabel variant="on" class="w-full">
           <Select
-id="tipoProduto" v-model="dados.tipoProdutoId" :options="tiposProdutos" filter option-value="id"
-                  option-label="descricao"
-                  class="w-full"/>
+              id="tipoProduto" v-model="dados.tipoProdutoId" :options="tiposProdutos" filter option-value="id"
+              option-label="descricao"
+              class="w-full"/>
           <label for="tipoProduto" class="required">Tipo de produto</label>
         </FloatLabel>
         <Button severity="primary" @click="mostrarDialogTiposProdutos = true">
@@ -99,22 +99,22 @@ id="tipoProduto" v-model="dados.tipoProdutoId" :options="tiposProdutos" filter o
       <div class="flex gap-4 w-full">
         <FloatLabel variant="on">
           <InputNumber
-id="quantidade" v-model="dados.quantidade" class="w-full" :min="1" show-buttons
-                       :max-fraction-digits="2"/>
+              id="quantidade" v-model="dados.quantidade" class="w-full" :min="1" show-buttons
+              :max-fraction-digits="2"/>
           <label for="quantidade" class="required">Quantidade</label>
         </FloatLabel>
         <FloatLabel variant="on" class="w-full">
           <Select
-id="tipoUnidade" v-model="dados.unidade" :options="tiposUnidade" option-value="nome"
-                  option-label="nome"
-                  class="w-full"/>
+              id="tipoUnidade" v-model="dados.unidade" :options="tiposUnidade" option-value="nome"
+              option-label="nome"
+              class="w-full"/>
           <label for="tipoUnidade" class="required">Tipo de unidade</label>
         </FloatLabel>
         <FloatLabel variant="on">
           <InputNumber
-id="valor" v-model="dados.valor" class="w-full" show-buttons mode="currency" currency="BRL"
-                       locale="pt-BR"
-                       :max-fraction-digits="2"/>
+              id="valor" v-model="dados.valor" class="w-full" show-buttons mode="currency" currency="BRL"
+              locale="pt-BR"
+              :max-fraction-digits="2"/>
           <label for="valor">Valor</label>
         </FloatLabel>
       </div>
@@ -137,8 +137,8 @@ id="valor" v-model="dados.valor" class="w-full" show-buttons mode="currency" cur
     </div>
   </Dialog>
   <DialogTiposProdutos
-v-model:visible="mostrarDialogTiposProdutos"
-                       @atualizar-tipos-produtos="handleBuscaTiposProdutos"/>
+      v-model:visible="mostrarDialogTiposProdutos"
+      @atualizar-tipos-produtos="handleBuscaTiposProdutos"/>
 </template>
 
 <style scoped>

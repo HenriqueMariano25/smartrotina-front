@@ -30,7 +30,7 @@ const items = ref([
     icon: 'ic:round-shopping-cart',
     items: [
       {
-        label: 'Lista de compras',
+        label: 'Listas de compras',
         icon: 'ic:round-checklist',
         command: () => {
           emit('esconder');
@@ -92,8 +92,10 @@ const items = ref([
 <template>
   <div
       :class="{'': visible, '-translate-x-full': !visible}"
-      class="card justify-center bg-white w-60 absolute z-10 h-full  ease-in-out duration-4000 flex transition">
-    <PanelMenu :model="items" class="w-full !bg-secundaria-500 p-2 !border-0 !rounded-none">
+      style="height: calc(100vh - 76px);"
+      class="flex gap-4 flex-col items-start card w-60 absolute z-10 ease-in-out duration-4000 transition !bg-secundaria-500 p-2 !border-0 !rounded-none">
+    <PanelMenu :model="items" class="w-full ">
+      <h1>Tete</h1>
       <template #item="{ item, hasSubmenu }">
         <div class="flex gap-2 items-center p-1 cursor-pointer">
           <div class="bg-secundaria-150 rounded">
@@ -104,6 +106,11 @@ const items = ref([
         </div>
       </template>
     </PanelMenu>
+    <div class="w-full mt-auto bg-white/50 rounded p-2">
+      <NuxtLink to="/" class="flex justify-center m-auto ">
+        <img src="@/assets/images/logo.png" alt="Logo" class="" width="190px">
+      </NuxtLink>
+    </div>
   </div>
 </template>
 

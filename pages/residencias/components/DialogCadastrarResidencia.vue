@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {Icon} from "@iconify/vue";
-import { cadastrarResidencia} from "~/composable/residencias/cadastrarResidencia";
+import {cadastrarResidencia} from "~/composable/residencias/cadastrarResidencia";
 import type {IResidencia} from "~/interfaces/residencias/residencia.interface";
 import type {ICadastrarResidencia} from "~/interfaces/residencias/cadastrarResidencia.interface";
 
@@ -24,7 +24,7 @@ const cadastrar = async () => {
   try {
     const residenciaCadastrada = await cadastrarResidencia(dados.value)
     emit('cadastrado', residenciaCadastrada)
-  }catch (err){
+  } catch (err) {
     mostrarErro.value = true
     mensagemErro.value = err
   }
@@ -34,7 +34,7 @@ const cadastrar = async () => {
 
 <template>
   <Dialog
-      class="w-5/12"
+      class="w-11/12 md:w-6/12"
       :visible="visible"
       modal header="Cadastrar residência"
       @update:visible="$emit('update:visible', false)">
