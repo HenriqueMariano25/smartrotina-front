@@ -1,9 +1,6 @@
 import {axiosApi} from "~/services/axiosApi";
+import type {IResidencia} from "~/interfaces/residencias/residencia.interface";
 
-export const buscarResidencias = async () => {
-  try {
-    return await axiosApi("/residencia", {method: "GET"})
-  } catch (err) {
-    console.log(err)
-  }
+export const buscarResidencias = async (): Promise<IResidencia[]> => {
+  return await axiosApi("/residencia", {method: "GET"})
 }

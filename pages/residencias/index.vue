@@ -77,7 +77,9 @@ await buscarResidencias().then(res => {
     tabs.value.push({title: residencia.nome, value: contador.toString(), id: residencia.id})
     residencias?.value.push({indexResidencia: residencia.id, moradores: []})
     contador++
+
   }
+  residenciaAtiva.value = 0
 })
 
 const residenciaCadastrada = (residencia: IResidencia) => {
@@ -157,30 +159,34 @@ const handleDeletarMorador = async (moradorId: number) => {
       </Button>
     </div>
     <div class="p-1 bg-white rounded h-full">
-      <Tabs v-model:value="residenciaAtiva" value="0" class="w-full !rounded h-full">
+      <Tabs v-model:value="residenciaAtiva" class="w-full !rounded h-full">
         <TabList class="!rounded">
           <Tab v-for="tab in tabs" :key="tab.title" :value="tab.value">{{ tab.title }}</Tab>
         </TabList>
         <TabPanels class="!p-0  h-full ">
           <TabPanel v-for="tab in tabs" :key="tab.value" :value="tab.value" class="!p-0 h-full">
-            <div class="flex h-full">
-              <div class="flex flex-col h-full bg-gray-400 p-2 gap-2">
-                <div
-v-tooltip="{ value: 'Moradores', showDelay: 800,}"
-                     class="!p-1 rounded bg-secundaria-50 cursor-pointer text-black"
-                     :class="{'!bg-primaria-200': subTab === 'moradores' }" @click="subTab = 'moradores'">
-                  <Icon icon="ic:round-person" width="30" height="30"/>
-                </div>
-                <div
-v-tooltip="{ value: 'Contas', showDelay: 800}"
-                     class="!p-1 rounded bg-secundaria-50 cursor-pointer text-black" :class="{'!bg-primaria-200': subTab === 'contas' }"
-                     @click="subTab = 'contas'">
-                  <Icon icon="ic:round-attach-money" width="30" height="30"/>
-                </div>
-              </div>
+            <div class="flex flex-col h-full">
+              <!--              <div class="flex w-full bg-gray-400 p-2 gap-2">-->
+              <!--                <div-->
+              <!--                    v-tooltip="{ value: 'Moradores', showDelay: 800,}"-->
+              <!--                    class="flex !p-1 rounded bg-secundaria-50 cursor-pointer text-black items-center"-->
+              <!--                    :class="{'!bg-primaria-200': subTab === 'moradores' }" @click="subTab = 'moradores'">-->
+              <!--                  <Icon icon="ic:round-person" width="30" height="30"/>-->
+              <!--                  <span>Moradores</span>-->
+
+              <!--                </div>-->
+              <!--                &lt;!&ndash;                <div&ndash;&gt;-->
+              <!--                &lt;!&ndash;                    v-tooltip="{ value: 'Contas', showDelay: 800}"&ndash;&gt;-->
+              <!--                &lt;!&ndash;                    class="!p-1 rounded bg-secundaria-50 cursor-pointer text-black"&ndash;&gt;-->
+              <!--                &lt;!&ndash;                    :class="{'!bg-primaria-200': subTab === 'contas' }"&ndash;&gt;-->
+              <!--                &lt;!&ndash;                    @click="subTab = 'contas'">&ndash;&gt;-->
+              <!--                &lt;!&ndash;                  <spans>Contas</spans>&ndash;&gt;-->
+              <!--                &lt;!&ndash;                  <Icon icon="ic:round-attach-money" width="30" height="30"/>&ndash;&gt;-->
+              <!--                &lt;!&ndash;                </div>&ndash;&gt;-->
+              <!--              </div>-->
               <div v-if="subTab === 'moradores'" class="flex flex-col w-full p-2 gap-2">
                 <div class="flex gap-2">
-                  <InputText type="text" placeholder="Buscar..." class="w-full"/>
+                  <InputText type="text" placeholder="Buscar..." class="md:w-full"/>
                   <Button type=button class="font-bold" @click="mostrarDialogCadastrarMorador = true">
                     <div>
                       <Icon icon="ic:round-plus" width="24"/>
@@ -189,14 +195,14 @@ v-tooltip="{ value: 'Contas', showDelay: 800}"
                   </Button>
                 </div>
                 <DataTable
-:value="residencias[residenciaAtiva]?.moradores" table-style="min-width: 50rem" show-gridlines
-                           striped-rows size="small">
+                    :value="residencias[residenciaAtiva]?.moradores" table-style="min-width: 50rem" show-gridlines
+                    striped-rows size="small">
                   <template #empty> Nenhum morador adicionado nessa residência.</template>
                   <Column header="" class="w-0">
                     <template #body="{ data }">
                       <Button
-text class="!p-1" aria-haspopup="true" aria-controls="overlay_tmenu"
-                              @click="toggleMenuOpcoesMorador($event, data)">
+                          text class="!p-1" aria-haspopup="true" aria-controls="overlay_tmenu"
+                          @click="toggleMenuOpcoesMorador($event, data)">
                         <Icon icon="tabler:dots" style="color: #000000" width=""/>
                       </Button>
                     </template>

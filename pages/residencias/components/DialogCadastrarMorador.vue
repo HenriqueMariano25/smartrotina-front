@@ -54,7 +54,7 @@ watch(() => props.visible, (valor) => {
 
 <template>
   <Dialog
-      class="w-5/12"
+      class="w-11/12 md:w-6/12"
       :visible="visible"
       modal header="Cadastrar morador"
       @update:visible="$emit('update:visible', !visible)">
@@ -65,8 +65,9 @@ watch(() => props.visible, (valor) => {
           <label for="residencia" class="required">Nome</label>
         </FloatLabel>
         <FloatLabel variant="on">
-          <DatePicker v-model="dados.dataNascimento" show-icon :max-date="maxDate" fluid date-format="dd/mm/yy"
-                      iconDisplay="input" inputId="residencia">
+          <DatePicker
+v-model="dados.dataNascimento" show-icon :max-date="maxDate" fluid date-format="dd/mm/yy"
+                      icon-display="input" input-id="residencia">
             <template #inputicon="">
               <Icon icon="ic:baseline-calendar-month" width="20"/>
             </template>
