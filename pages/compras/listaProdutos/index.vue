@@ -124,8 +124,9 @@ async function eProdutosComprados() {
 </script>
 
 <template>
-  <div class="flex flex-col w-full gap-4 h-full relative">
-    <div class="flex justify-end p-2 bg-white rounded">
+  <div class="flex flex-col w-full gap-4  relative md:!h-full "
+       style="height: calc(100vh - 108px);">
+    <div class="flex justify-end p-2 bg-white rounded ">
       <Button type="button" class="font-bold" @click="mostrarDialogCadastrarProduto = true">
         <div>
           <Icon icon="ic:round-plus" width="24"/>
@@ -187,7 +188,7 @@ async function eProdutosComprados() {
                   </div>
                   <template v-if="produtoEditandoValor?.id !== item.id">
                     <Button
-                        v-tooltip.left="{ value: 'Atualizar valor', showDelay: 800}" text class="!p-1"
+                        v-tooltip.left="{ value: 'Atualizar valor', showDelay: 800}" text class="!p-1 !hidden md:!flex"
                         @click="editandoValorProduto(item)">
                       <Icon icon="ri:money-dollar-circle-line" width="32"/>
                     </Button>
@@ -256,7 +257,7 @@ async function eProdutosComprados() {
                   </div>
                   <template v-if="produtoEditandoValor?.id !== item.id">
                     <Button
-                        v-tooltip.left="{ value: 'Atualizar valor', showDelay: 800}" text class="!p-1"
+                        v-tooltip.left="{ value: 'Atualizar valor', showDelay: 800}" text class="!p-1 !hidden md:!flex"
                         @click="editandoValorProduto(item)">
                       <Icon icon="ri:money-dollar-circle-line" width="32"/>
                     </Button>

@@ -96,7 +96,7 @@ watch(() => props.visible, (valor) => {
           <Icon :icon="ICONES.EDITAR" width="24"/>
         </Button>
       </div>
-      <div class="flex gap-4 w-full">
+      <div class="flex flex-col md:flex-row gap-4 w-full">
         <FloatLabel variant="on">
           <InputNumber
               id="quantidade" v-model="dados.quantidade" class="w-full" :min="1" show-buttons

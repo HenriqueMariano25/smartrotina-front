@@ -68,7 +68,7 @@ async function finalizarCompra() {
 
 <template>
   <Dialog
-      class="w-8/12 bg-gray-200 " :visible="visible" modal header="Finalizar compra"
+      class="w-11/12 md:w-8/12 bg-gray-200 " :visible="visible" modal header="Finalizar compra"
       @update:visible="emit('update:visible')">
     <div class="flex flex-col gap-4">
       <div class="flex flex-col">
@@ -76,7 +76,7 @@ async function finalizarCompra() {
         <span>Valor previsto: {{ formatarParaReal(valorPrevisto) }}</span>
       </div>
       <div class="flex flex-col gap-4">
-        <div class="flex gap-4">
+        <div class="flex flex-col md:flex-row gap-4">
           <FloatLabel variant="on" class="w-full">
             <Select
                 v-model="dados.mercadoId" :options="mercados" filter option-label="nome"
@@ -97,7 +97,7 @@ async function finalizarCompra() {
           </FloatLabel>
         </div>
 
-        <div class="flex w-full gap-4">
+        <div class="flex w-full flex-col md:flex-row gap-4">
           <FloatLabel variant="on" class="w-full">
             <InputNumber
                 id="valor" v-model="dados.valor" class="w-full" show-buttons mode="currency" currency="BRL"
