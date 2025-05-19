@@ -11,11 +11,6 @@ const {ehMobile} = useEhMobile()
 
 const mostrarPanelMenuLateralMobile = ref<boolean>(false)
 
-function toggleMenu() {
-  console.log("Aquiio")
-
-}
-
 </script>
 
 <template>

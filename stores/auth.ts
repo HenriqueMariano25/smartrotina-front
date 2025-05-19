@@ -1,16 +1,16 @@
 import {defineStore} from "pinia";
 import type {LoginDto} from "~/dto/login/loginDto";
-import type {UsuarioInterface} from "~/interfaces/usuario.interface";
+import type {IUsuario} from "~/interfaces/usuarios/usuario.interface";
 import {axiosApi} from "~/services/axiosApi";
 
 interface LoginResponse {
     token: string;
-    usuario: UsuarioInterface
+    usuario: IUsuario
 }
 
 export const useAutenticacaoStore = defineStore('autenticacao', {
     state: () => ({
-        usuario: null as UsuarioInterface | null,
+        usuario: null as IUsuario | null,
         token: null as string | null
     }),
     actions: {

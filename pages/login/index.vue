@@ -26,7 +26,9 @@ const handleLogin = async () => {
       await navigateTo("/")
     } catch (err) {
       console.log(err)
-      erroLogin.value = true
+      console.log(err.message)
+
+      erroLogin.value = err.message
     }
   }
 
@@ -50,7 +52,7 @@ const handleLogin = async () => {
         </FloatLabel>
         <Button label="Entrar" severity="primary-50" :disabled="dadosLogin.email === null || dadosLogin.senha === null"
                 @click="handleLogin()"/>
-        <Message v-if="erroLogin" severity="error" closable>Email ou senha incorreta</Message>
+        <Message v-if="erroLogin" severity="error" closable>{{ erroLogin }}</Message>
         <NuxtLink to="/cadastrar" class="text-center">
           <span class="text-center text-sm">Não tem conta ainda ? <b>Criar</b></span>
         </NuxtLink>
