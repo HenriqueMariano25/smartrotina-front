@@ -159,7 +159,7 @@ const handleDeletarMorador = async (moradorId: number) => {
       </Button>
     </div>
     <div class="p-1 bg-white rounded h-full">
-      <Tabs v-model:value="residenciaAtiva" class="w-full !rounded h-full">
+      <Tabs v-if="tabs.length > 0" v-model:value="residenciaAtiva" class="w-full !rounded h-full">
         <TabList class="!rounded">
           <Tab v-for="tab in tabs" :key="tab.title" :value="tab.value">{{ tab.title }}</Tab>
         </TabList>
@@ -228,7 +228,7 @@ const handleDeletarMorador = async (moradorId: number) => {
                 <DataTable :value="contas" table-style="min-width: 50rem" show-gridlines striped-rows>
                   <template #empty> Nenhuma conta adicionada nessa residência.</template>
                   <Column header="" class="w-0">
-                    <template #body="slotProps">
+                    <template #body>
                       <Button text class="!p-1">
                         <Icon icon="tabler:dots" style="color: #000000" width=""/>
                       </Button>
@@ -243,6 +243,7 @@ const handleDeletarMorador = async (moradorId: number) => {
           </TabPanel>
         </TabPanels>
       </Tabs>
+      <span v-if="tabs.length === 0" class="text-2xl ml-2 font-bold text-gray-600">Nenhuma residência encontrada...</span>
       <TieredMenu id="overlay_tmenu" ref="menuOpcoesMorador" :model="opcoesItemTabela" popup>
         <template #item="{ item, props }">
           <a v-ripple class="flex items-center" v-bind="props.action">
@@ -256,7 +257,7 @@ const handleDeletarMorador = async (moradorId: number) => {
     <DialogCadastrarResidencia v-model:visible="mostrarDialogCadastrarResidencia" @cadastrado="residenciaCadastrada"/>
     <DialogCadastrarMorador
         v-model:visible="mostrarDialogCadastrarMorador"
-        :residencia-id="tabs[residenciaAtiva].id"
+        :residencia-id="tabs[residenciaAtiva]?.id"
         @cadastrado="moradorCadastrado"/>
     <DialogEditarMorador
         v-model:visible="mostrarDialogEditarMorador"
